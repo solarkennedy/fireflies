@@ -1,0 +1,3861 @@
+
+fireflies.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00001a42  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000022  00800060  00001a42  00001ab6  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000061  00800082  00001a64  00001ad8  2**0
+                  ALLOC
+  3 .noinit       00000001  008000e3  00001ac5  00001ad8  2**0
+                  ALLOC
+  4 .stab         000009e4  00000000  00000000  00001ad8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  5 .stabstr      000004a1  00000000  00000000  000024bc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_aranges 00000028  00000000  00000000  0000295d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_pubnames 00000136  00000000  00000000  00002985  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_info   00000452  00000000  00000000  00002abb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_abbrev 000001ba  00000000  00000000  00002f0d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_line   00000a14  00000000  00000000  000030c7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_frame  000000a0  00000000  00000000  00003adc  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_str    0000015e  00000000  00000000  00003b7c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_loc    000003ae  00000000  00000000  00003cda  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 14 .debug_ranges 000001a8  00000000  00000000  00004088  2**0
+                  CONTENTS, READONLY, DEBUGGING
+Disassembly of section .text:
+
+00000000 <__vectors>:
+       0:	0e c0       	rjmp	.+28     	; 0x1e <__ctors_end>
+       2:	32 c0       	rjmp	.+100    	; 0x68 <__bad_interrupt>
+       4:	31 c0       	rjmp	.+98     	; 0x68 <__bad_interrupt>
+       6:	30 c0       	rjmp	.+96     	; 0x68 <__bad_interrupt>
+       8:	2f c0       	rjmp	.+94     	; 0x68 <__bad_interrupt>
+       a:	00 c9       	rjmp	.-3584   	; 0xfffff20c <__eeprom_end+0xff7ef20c>
+       c:	2d c0       	rjmp	.+90     	; 0x68 <__bad_interrupt>
+       e:	2c c0       	rjmp	.+88     	; 0x68 <__bad_interrupt>
+      10:	2b c0       	rjmp	.+86     	; 0x68 <__bad_interrupt>
+      12:	2a c0       	rjmp	.+84     	; 0x68 <__bad_interrupt>
+      14:	29 c0       	rjmp	.+82     	; 0x68 <__bad_interrupt>
+      16:	28 c0       	rjmp	.+80     	; 0x68 <__bad_interrupt>
+      18:	27 c0       	rjmp	.+78     	; 0x68 <__bad_interrupt>
+      1a:	26 c0       	rjmp	.+76     	; 0x68 <__bad_interrupt>
+      1c:	25 c0       	rjmp	.+74     	; 0x68 <__bad_interrupt>
+
+0000001e <__ctors_end>:
+      1e:	11 24       	eor	r1, r1
+      20:	1f be       	out	0x3f, r1	; 63
+      22:	cf e5       	ldi	r28, 0x5F	; 95
+      24:	d2 e0       	ldi	r29, 0x02	; 2
+      26:	de bf       	out	0x3e, r29	; 62
+      28:	cd bf       	out	0x3d, r28	; 61
+
+0000002a <get_mcusr>:
+uint8_t mcusr_mirror __attribute__ ((section (".noinit")));
+void get_mcusr(void) \
+     __attribute__((naked)) \
+     __attribute__((section(".init3")));
+void get_mcusr(void)
+{
+      2a:	84 b7       	in	r24, 0x34	; 52
+      2c:	80 93 e3 00 	sts	0x00E3, r24
+    mcusr_mirror = MCUSR;
+    MCUSR = 0;
+      30:	14 be       	out	0x34, r1	; 52
+    wdt_disable();
+      32:	88 e1       	ldi	r24, 0x18	; 24
+      34:	0f b6       	in	r0, 0x3f	; 63
+      36:	f8 94       	cli
+      38:	81 bd       	out	0x21, r24	; 33
+      3a:	11 bc       	out	0x21, r1	; 33
+      3c:	0f be       	out	0x3f, r0	; 63
+
+0000003e <__do_copy_data>:
+      3e:	10 e0       	ldi	r17, 0x00	; 0
+      40:	a0 e6       	ldi	r26, 0x60	; 96
+      42:	b0 e0       	ldi	r27, 0x00	; 0
+      44:	e2 e4       	ldi	r30, 0x42	; 66
+      46:	fa e1       	ldi	r31, 0x1A	; 26
+      48:	02 c0       	rjmp	.+4      	; 0x4e <.do_copy_data_start>
+
+0000004a <.do_copy_data_loop>:
+      4a:	05 90       	lpm	r0, Z+
+      4c:	0d 92       	st	X+, r0
+
+0000004e <.do_copy_data_start>:
+      4e:	a2 38       	cpi	r26, 0x82	; 130
+      50:	b1 07       	cpc	r27, r17
+      52:	d9 f7       	brne	.-10     	; 0x4a <.do_copy_data_loop>
+
+00000054 <__do_clear_bss>:
+      54:	10 e0       	ldi	r17, 0x00	; 0
+      56:	a2 e8       	ldi	r26, 0x82	; 130
+      58:	b0 e0       	ldi	r27, 0x00	; 0
+      5a:	01 c0       	rjmp	.+2      	; 0x5e <.do_clear_bss_start>
+
+0000005c <.do_clear_bss_loop>:
+      5c:	1d 92       	st	X+, r1
+
+0000005e <.do_clear_bss_start>:
+      5e:	a3 3e       	cpi	r26, 0xE3	; 227
+      60:	b1 07       	cpc	r27, r17
+      62:	e1 f7       	brne	.-8      	; 0x5c <.do_clear_bss_loop>
+      64:	89 d3       	rcall	.+1810   	; 0x778 <main>
+      66:	eb cc       	rjmp	.-1578   	; 0xfffffa3e <__eeprom_end+0xff7efa3e>
+
+00000068 <__bad_interrupt>:
+      68:	cb cf       	rjmp	.-106    	; 0x0 <__heap_end>
+
+0000006a <delay>:
+int analogRead(void);
+int lightness_counter = 0;
+void testpattern(void);
+
+void delay(int var)		//delay of 10ms for var=1
+{
+      6a:	ac 01       	movw	r20, r24
+	unsigned char il, jl, kl;
+	for (il=0; il<var; il++) 
+      6c:	18 16       	cp	r1, r24
+      6e:	19 06       	cpc	r1, r25
+      70:	7c f4       	brge	.+30     	; 0x90 <delay+0x26>
+	for (jl=0; jl<32;jl++)
+      72:	20 e0       	ldi	r18, 0x00	; 0
+      74:	90 e2       	ldi	r25, 0x20	; 32
+      76:	89 ef       	ldi	r24, 0xF9	; 249
+	for (kl=0; kl<249; kl++) 
+	asm("NOP");
+      78:	00 00       	nop
+      7a:	81 50       	subi	r24, 0x01	; 1
+void delay(int var)		//delay of 10ms for var=1
+{
+	unsigned char il, jl, kl;
+	for (il=0; il<var; il++) 
+	for (jl=0; jl<32;jl++)
+	for (kl=0; kl<249; kl++) 
+      7c:	e9 f7       	brne	.-6      	; 0x78 <delay+0xe>
+      7e:	91 50       	subi	r25, 0x01	; 1
+
+void delay(int var)		//delay of 10ms for var=1
+{
+	unsigned char il, jl, kl;
+	for (il=0; il<var; il++) 
+	for (jl=0; jl<32;jl++)
+      80:	d1 f7       	brne	.-12     	; 0x76 <delay+0xc>
+void testpattern(void);
+
+void delay(int var)		//delay of 10ms for var=1
+{
+	unsigned char il, jl, kl;
+	for (il=0; il<var; il++) 
+      82:	2f 5f       	subi	r18, 0xFF	; 255
+      84:	82 2f       	mov	r24, r18
+      86:	90 e0       	ldi	r25, 0x00	; 0
+      88:	84 17       	cp	r24, r20
+      8a:	95 07       	cpc	r25, r21
+      8c:	9c f3       	brlt	.-26     	; 0x74 <delay+0xa>
+      8e:	08 95       	ret
+      90:	08 95       	ret
+
+00000092 <alloff>:
+			randomplay();
+	}
+	
+}
+
+void alloff(){
+      92:	10 92 85 00 	sts	0x0085, r1
+      96:	10 92 84 00 	sts	0x0084, r1
+      9a:	10 92 87 00 	sts	0x0087, r1
+      9e:	10 92 86 00 	sts	0x0086, r1
+      a2:	10 92 89 00 	sts	0x0089, r1
+      a6:	10 92 88 00 	sts	0x0088, r1
+      aa:	10 92 8b 00 	sts	0x008B, r1
+      ae:	10 92 8a 00 	sts	0x008A, r1
+      b2:	10 92 8d 00 	sts	0x008D, r1
+      b6:	10 92 8c 00 	sts	0x008C, r1
+      ba:	10 92 8f 00 	sts	0x008F, r1
+      be:	10 92 8e 00 	sts	0x008E, r1
+      c2:	10 92 91 00 	sts	0x0091, r1
+      c6:	10 92 90 00 	sts	0x0090, r1
+      ca:	10 92 93 00 	sts	0x0093, r1
+      ce:	10 92 92 00 	sts	0x0092, r1
+      d2:	10 92 95 00 	sts	0x0095, r1
+      d6:	10 92 94 00 	sts	0x0094, r1
+      da:	10 92 97 00 	sts	0x0097, r1
+      de:	10 92 96 00 	sts	0x0096, r1
+      e2:	10 92 99 00 	sts	0x0099, r1
+      e6:	10 92 98 00 	sts	0x0098, r1
+      ea:	10 92 9b 00 	sts	0x009B, r1
+      ee:	10 92 9a 00 	sts	0x009A, r1
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+	 flystatus[fly]=0;
+  }
+}
+      f2:	08 95       	ret
+
+000000f4 <allon>:
+void allon(){
+      f4:	81 e0       	ldi	r24, 0x01	; 1
+      f6:	90 e0       	ldi	r25, 0x00	; 0
+      f8:	90 93 85 00 	sts	0x0085, r25
+      fc:	80 93 84 00 	sts	0x0084, r24
+     100:	90 93 87 00 	sts	0x0087, r25
+     104:	80 93 86 00 	sts	0x0086, r24
+     108:	90 93 89 00 	sts	0x0089, r25
+     10c:	80 93 88 00 	sts	0x0088, r24
+     110:	90 93 8b 00 	sts	0x008B, r25
+     114:	80 93 8a 00 	sts	0x008A, r24
+     118:	90 93 8d 00 	sts	0x008D, r25
+     11c:	80 93 8c 00 	sts	0x008C, r24
+     120:	90 93 8f 00 	sts	0x008F, r25
+     124:	80 93 8e 00 	sts	0x008E, r24
+     128:	90 93 91 00 	sts	0x0091, r25
+     12c:	80 93 90 00 	sts	0x0090, r24
+     130:	90 93 93 00 	sts	0x0093, r25
+     134:	80 93 92 00 	sts	0x0092, r24
+     138:	90 93 95 00 	sts	0x0095, r25
+     13c:	80 93 94 00 	sts	0x0094, r24
+     140:	90 93 97 00 	sts	0x0097, r25
+     144:	80 93 96 00 	sts	0x0096, r24
+     148:	90 93 99 00 	sts	0x0099, r25
+     14c:	80 93 98 00 	sts	0x0098, r24
+     150:	90 93 9b 00 	sts	0x009B, r25
+     154:	80 93 9a 00 	sts	0x009A, r24
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+         flystatus[fly]=1;
+  }
+}
+     158:	08 95       	ret
+
+0000015a <analogRead>:
+
+}
+
+
+int analogRead(void)
+{
+     15a:	81 e0       	ldi	r24, 0x01	; 1
+     15c:	87 b9       	out	0x07, r24	; 7
+        uint8_t low, high;
+        ADMUX = 0b00000001;
+        sbi(ADCSRA, ADSC);
+     15e:	36 9a       	sbi	0x06, 6	; 6
+        while (bit_is_set(ADCSRA, ADSC));
+     160:	36 99       	sbic	0x06, 6	; 6
+     162:	fe cf       	rjmp	.-4      	; 0x160 <analogRead+0x6>
+        low = ADCL;
+     164:	24 b1       	in	r18, 0x04	; 4
+        high = ADCH;
+     166:	45 b1       	in	r20, 0x05	; 5
+     168:	94 2f       	mov	r25, r20
+     16a:	80 e0       	ldi	r24, 0x00	; 0
+     16c:	30 e0       	ldi	r19, 0x00	; 0
+     16e:	28 2b       	or	r18, r24
+     170:	39 2b       	or	r19, r25
+        return (high << 8) | low;
+}
+     172:	c9 01       	movw	r24, r18
+     174:	08 95       	ret
+
+00000176 <check_if_sleepy>:
+
+
+
+void check_if_sleepy(){
+     176:	80 91 84 00 	lds	r24, 0x0084
+     17a:	90 91 85 00 	lds	r25, 0x0085
+     17e:	20 e0       	ldi	r18, 0x00	; 0
+     180:	01 97       	sbiw	r24, 0x01	; 1
+     182:	09 f0       	breq	.+2      	; 0x186 <check_if_sleepy+0x10>
+     184:	21 e0       	ldi	r18, 0x01	; 1
+     186:	80 91 86 00 	lds	r24, 0x0086
+     18a:	90 91 87 00 	lds	r25, 0x0087
+     18e:	01 97       	sbiw	r24, 0x01	; 1
+     190:	09 f4       	brne	.+2      	; 0x194 <check_if_sleepy+0x1e>
+     192:	67 c0       	rjmp	.+206    	; 0x262 <__stack+0x3>
+     194:	80 91 88 00 	lds	r24, 0x0088
+     198:	90 91 89 00 	lds	r25, 0x0089
+     19c:	01 97       	sbiw	r24, 0x01	; 1
+     19e:	09 f4       	brne	.+2      	; 0x1a2 <check_if_sleepy+0x2c>
+     1a0:	68 c0       	rjmp	.+208    	; 0x272 <__stack+0x13>
+     1a2:	80 91 8a 00 	lds	r24, 0x008A
+     1a6:	90 91 8b 00 	lds	r25, 0x008B
+     1aa:	01 97       	sbiw	r24, 0x01	; 1
+     1ac:	09 f4       	brne	.+2      	; 0x1b0 <check_if_sleepy+0x3a>
+     1ae:	69 c0       	rjmp	.+210    	; 0x282 <__stack+0x23>
+     1b0:	80 91 8c 00 	lds	r24, 0x008C
+     1b4:	90 91 8d 00 	lds	r25, 0x008D
+     1b8:	01 97       	sbiw	r24, 0x01	; 1
+     1ba:	09 f4       	brne	.+2      	; 0x1be <check_if_sleepy+0x48>
+     1bc:	6a c0       	rjmp	.+212    	; 0x292 <__stack+0x33>
+     1be:	80 91 8e 00 	lds	r24, 0x008E
+     1c2:	90 91 8f 00 	lds	r25, 0x008F
+     1c6:	01 97       	sbiw	r24, 0x01	; 1
+     1c8:	09 f4       	brne	.+2      	; 0x1cc <check_if_sleepy+0x56>
+     1ca:	6b c0       	rjmp	.+214    	; 0x2a2 <__stack+0x43>
+     1cc:	80 91 90 00 	lds	r24, 0x0090
+     1d0:	90 91 91 00 	lds	r25, 0x0091
+     1d4:	01 97       	sbiw	r24, 0x01	; 1
+     1d6:	09 f4       	brne	.+2      	; 0x1da <check_if_sleepy+0x64>
+     1d8:	6c c0       	rjmp	.+216    	; 0x2b2 <__stack+0x53>
+     1da:	80 91 92 00 	lds	r24, 0x0092
+     1de:	90 91 93 00 	lds	r25, 0x0093
+     1e2:	01 97       	sbiw	r24, 0x01	; 1
+     1e4:	09 f4       	brne	.+2      	; 0x1e8 <check_if_sleepy+0x72>
+     1e6:	6d c0       	rjmp	.+218    	; 0x2c2 <__stack+0x63>
+     1e8:	80 91 94 00 	lds	r24, 0x0094
+     1ec:	90 91 95 00 	lds	r25, 0x0095
+     1f0:	01 97       	sbiw	r24, 0x01	; 1
+     1f2:	09 f4       	brne	.+2      	; 0x1f6 <check_if_sleepy+0x80>
+     1f4:	6e c0       	rjmp	.+220    	; 0x2d2 <__stack+0x73>
+     1f6:	80 91 96 00 	lds	r24, 0x0096
+     1fa:	90 91 97 00 	lds	r25, 0x0097
+     1fe:	01 97       	sbiw	r24, 0x01	; 1
+     200:	09 f4       	brne	.+2      	; 0x204 <check_if_sleepy+0x8e>
+     202:	6f c0       	rjmp	.+222    	; 0x2e2 <__stack+0x83>
+     204:	80 91 98 00 	lds	r24, 0x0098
+     208:	90 91 99 00 	lds	r25, 0x0099
+     20c:	01 97       	sbiw	r24, 0x01	; 1
+     20e:	09 f4       	brne	.+2      	; 0x212 <check_if_sleepy+0x9c>
+     210:	70 c0       	rjmp	.+224    	; 0x2f2 <__stack+0x93>
+     212:	80 91 9a 00 	lds	r24, 0x009A
+     216:	90 91 9b 00 	lds	r25, 0x009B
+     21a:	01 97       	sbiw	r24, 0x01	; 1
+     21c:	09 f4       	brne	.+2      	; 0x220 <check_if_sleepy+0xaa>
+     21e:	71 c0       	rjmp	.+226    	; 0x302 <__stack+0xa3>
+for(int j = 0; j < NumberOfFlys; j++)
+     {
+	if ( flystatus[j] == 1 )
+	readyforbed=false;
+     }
+if ( lightness_counter < 10 )
+     220:	80 91 82 00 	lds	r24, 0x0082
+     224:	90 91 83 00 	lds	r25, 0x0083
+     228:	0a 97       	sbiw	r24, 0x0a	; 10
+     22a:	cc f0       	brlt	.+50     	; 0x25e <check_if_sleepy+0xe8>
+	readyforbed=false;
+cli();
+     22c:	f8 94       	cli
+if ( readyforbed==true )
+     22e:	22 23       	and	r18, r18
+     230:	a1 f0       	breq	.+40     	; 0x25a <check_if_sleepy+0xe4>
+{ 
+     DDRB = 0;
+     232:	17 ba       	out	0x17, r1	; 23
+//     PORTB = 1<<anode[0]|0<<cathode[0];
+ //    DDRB = 1<<anode[0]|1<<cathode[0];
+
+     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+     234:	85 b7       	in	r24, 0x35	; 53
+     236:	87 7e       	andi	r24, 0xE7	; 231
+     238:	80 61       	ori	r24, 0x10	; 16
+     23a:	85 bf       	out	0x35, r24	; 53
+     sleep_mode();
+     23c:	85 b7       	in	r24, 0x35	; 53
+     23e:	80 62       	ori	r24, 0x20	; 32
+     240:	85 bf       	out	0x35, r24	; 53
+     242:	88 95       	sleep
+     244:	85 b7       	in	r24, 0x35	; 53
+     246:	8f 7d       	andi	r24, 0xDF	; 223
+     248:	85 bf       	out	0x35, r24	; 53
+     sleep_enable();
+     24a:	85 b7       	in	r24, 0x35	; 53
+     24c:	80 62       	ori	r24, 0x20	; 32
+     24e:	85 bf       	out	0x35, r24	; 53
+     sei();
+     250:	78 94       	sei
+     sleep_cpu();
+     252:	88 95       	sleep
+     sleep_disable();
+     254:	85 b7       	in	r24, 0x35	; 53
+     256:	8f 7d       	andi	r24, 0xDF	; 223
+     258:	85 bf       	out	0x35, r24	; 53
+}
+sei();
+     25a:	78 94       	sei
+}
+     25c:	08 95       	ret
+for(int j = 0; j < NumberOfFlys; j++)
+     {
+	if ( flystatus[j] == 1 )
+	readyforbed=false;
+     }
+if ( lightness_counter < 10 )
+     25e:	20 e0       	ldi	r18, 0x00	; 0
+     260:	e5 cf       	rjmp	.-54     	; 0x22c <check_if_sleepy+0xb6>
+
+void check_if_sleepy(){
+bool readyforbed = true;
+for(int j = 0; j < NumberOfFlys; j++)
+     {
+	if ( flystatus[j] == 1 )
+     262:	20 e0       	ldi	r18, 0x00	; 0
+     264:	80 91 88 00 	lds	r24, 0x0088
+     268:	90 91 89 00 	lds	r25, 0x0089
+     26c:	01 97       	sbiw	r24, 0x01	; 1
+     26e:	09 f0       	breq	.+2      	; 0x272 <__stack+0x13>
+     270:	98 cf       	rjmp	.-208    	; 0x1a2 <check_if_sleepy+0x2c>
+     272:	20 e0       	ldi	r18, 0x00	; 0
+     274:	80 91 8a 00 	lds	r24, 0x008A
+     278:	90 91 8b 00 	lds	r25, 0x008B
+     27c:	01 97       	sbiw	r24, 0x01	; 1
+     27e:	09 f0       	breq	.+2      	; 0x282 <__stack+0x23>
+     280:	97 cf       	rjmp	.-210    	; 0x1b0 <check_if_sleepy+0x3a>
+     282:	20 e0       	ldi	r18, 0x00	; 0
+     284:	80 91 8c 00 	lds	r24, 0x008C
+     288:	90 91 8d 00 	lds	r25, 0x008D
+     28c:	01 97       	sbiw	r24, 0x01	; 1
+     28e:	09 f0       	breq	.+2      	; 0x292 <__stack+0x33>
+     290:	96 cf       	rjmp	.-212    	; 0x1be <check_if_sleepy+0x48>
+     292:	20 e0       	ldi	r18, 0x00	; 0
+     294:	80 91 8e 00 	lds	r24, 0x008E
+     298:	90 91 8f 00 	lds	r25, 0x008F
+     29c:	01 97       	sbiw	r24, 0x01	; 1
+     29e:	09 f0       	breq	.+2      	; 0x2a2 <__stack+0x43>
+     2a0:	95 cf       	rjmp	.-214    	; 0x1cc <check_if_sleepy+0x56>
+     2a2:	20 e0       	ldi	r18, 0x00	; 0
+     2a4:	80 91 90 00 	lds	r24, 0x0090
+     2a8:	90 91 91 00 	lds	r25, 0x0091
+     2ac:	01 97       	sbiw	r24, 0x01	; 1
+     2ae:	09 f0       	breq	.+2      	; 0x2b2 <__stack+0x53>
+     2b0:	94 cf       	rjmp	.-216    	; 0x1da <check_if_sleepy+0x64>
+     2b2:	20 e0       	ldi	r18, 0x00	; 0
+     2b4:	80 91 92 00 	lds	r24, 0x0092
+     2b8:	90 91 93 00 	lds	r25, 0x0093
+     2bc:	01 97       	sbiw	r24, 0x01	; 1
+     2be:	09 f0       	breq	.+2      	; 0x2c2 <__stack+0x63>
+     2c0:	93 cf       	rjmp	.-218    	; 0x1e8 <check_if_sleepy+0x72>
+     2c2:	20 e0       	ldi	r18, 0x00	; 0
+     2c4:	80 91 94 00 	lds	r24, 0x0094
+     2c8:	90 91 95 00 	lds	r25, 0x0095
+     2cc:	01 97       	sbiw	r24, 0x01	; 1
+     2ce:	09 f0       	breq	.+2      	; 0x2d2 <__stack+0x73>
+     2d0:	92 cf       	rjmp	.-220    	; 0x1f6 <check_if_sleepy+0x80>
+     2d2:	20 e0       	ldi	r18, 0x00	; 0
+     2d4:	80 91 96 00 	lds	r24, 0x0096
+     2d8:	90 91 97 00 	lds	r25, 0x0097
+     2dc:	01 97       	sbiw	r24, 0x01	; 1
+     2de:	09 f0       	breq	.+2      	; 0x2e2 <__stack+0x83>
+     2e0:	91 cf       	rjmp	.-222    	; 0x204 <check_if_sleepy+0x8e>
+     2e2:	20 e0       	ldi	r18, 0x00	; 0
+     2e4:	80 91 98 00 	lds	r24, 0x0098
+     2e8:	90 91 99 00 	lds	r25, 0x0099
+     2ec:	01 97       	sbiw	r24, 0x01	; 1
+     2ee:	09 f0       	breq	.+2      	; 0x2f2 <__stack+0x93>
+     2f0:	90 cf       	rjmp	.-224    	; 0x212 <check_if_sleepy+0x9c>
+     2f2:	20 e0       	ldi	r18, 0x00	; 0
+     2f4:	80 91 9a 00 	lds	r24, 0x009A
+     2f8:	90 91 9b 00 	lds	r25, 0x009B
+     2fc:	01 97       	sbiw	r24, 0x01	; 1
+     2fe:	09 f0       	breq	.+2      	; 0x302 <__stack+0xa3>
+     300:	8f cf       	rjmp	.-226    	; 0x220 <check_if_sleepy+0xaa>
+     302:	20 e0       	ldi	r18, 0x00	; 0
+     304:	8d cf       	rjmp	.-230    	; 0x220 <check_if_sleepy+0xaa>
+
+00000306 <randomplay>:
+  }
+}
+
+
+
+void randomplay(){
+     306:	0f 93       	push	r16
+     308:	1f 93       	push	r17
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     30a:	d6 da       	rcall	.-2644   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     30c:	00 91 79 00 	lds	r16, 0x0079
+     310:	10 91 7a 00 	lds	r17, 0x007A
+     314:	20 91 7b 00 	lds	r18, 0x007B
+     318:	30 91 7c 00 	lds	r19, 0x007C
+     31c:	68 ee       	ldi	r22, 0xE8	; 232
+     31e:	73 e0       	ldi	r23, 0x03	; 3
+     320:	da da       	rcall	.-2636   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     322:	ac 01       	movw	r20, r24
+     324:	66 27       	eor	r22, r22
+     326:	57 fd       	sbrc	r21, 7
+     328:	60 95       	com	r22
+     32a:	76 2f       	mov	r23, r22
+     32c:	40 0f       	add	r20, r16
+     32e:	51 1f       	adc	r21, r17
+     330:	62 1f       	adc	r22, r18
+     332:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     334:	40 32       	cpi	r20, 0x20	; 32
+     336:	83 e0       	ldi	r24, 0x03	; 3
+     338:	58 07       	cpc	r21, r24
+     33a:	80 e0       	ldi	r24, 0x00	; 0
+     33c:	68 07       	cpc	r22, r24
+     33e:	80 e0       	ldi	r24, 0x00	; 0
+     340:	78 07       	cpc	r23, r24
+     342:	0c f4       	brge	.+2      	; 0x346 <randomplay+0x40>
+     344:	a2 c1       	rjmp	.+836    	; 0x68a <randomplay+0x384>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     346:	81 e0       	ldi	r24, 0x01	; 1
+     348:	90 e0       	ldi	r25, 0x00	; 0
+     34a:	90 93 85 00 	sts	0x0085, r25
+     34e:	80 93 84 00 	sts	0x0084, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     352:	b2 da       	rcall	.-2716   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     354:	00 91 79 00 	lds	r16, 0x0079
+     358:	10 91 7a 00 	lds	r17, 0x007A
+     35c:	20 91 7b 00 	lds	r18, 0x007B
+     360:	30 91 7c 00 	lds	r19, 0x007C
+     364:	68 ee       	ldi	r22, 0xE8	; 232
+     366:	73 e0       	ldi	r23, 0x03	; 3
+     368:	b6 da       	rcall	.-2708   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     36a:	ac 01       	movw	r20, r24
+     36c:	66 27       	eor	r22, r22
+     36e:	57 fd       	sbrc	r21, 7
+     370:	60 95       	com	r22
+     372:	76 2f       	mov	r23, r22
+     374:	40 0f       	add	r20, r16
+     376:	51 1f       	adc	r21, r17
+     378:	62 1f       	adc	r22, r18
+     37a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     37c:	40 32       	cpi	r20, 0x20	; 32
+     37e:	83 e0       	ldi	r24, 0x03	; 3
+     380:	58 07       	cpc	r21, r24
+     382:	80 e0       	ldi	r24, 0x00	; 0
+     384:	68 07       	cpc	r22, r24
+     386:	80 e0       	ldi	r24, 0x00	; 0
+     388:	78 07       	cpc	r23, r24
+     38a:	0c f4       	brge	.+2      	; 0x38e <randomplay+0x88>
+     38c:	73 c1       	rjmp	.+742    	; 0x674 <randomplay+0x36e>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     38e:	81 e0       	ldi	r24, 0x01	; 1
+     390:	90 e0       	ldi	r25, 0x00	; 0
+     392:	90 93 87 00 	sts	0x0087, r25
+     396:	80 93 86 00 	sts	0x0086, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     39a:	8e da       	rcall	.-2788   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     39c:	00 91 79 00 	lds	r16, 0x0079
+     3a0:	10 91 7a 00 	lds	r17, 0x007A
+     3a4:	20 91 7b 00 	lds	r18, 0x007B
+     3a8:	30 91 7c 00 	lds	r19, 0x007C
+     3ac:	68 ee       	ldi	r22, 0xE8	; 232
+     3ae:	73 e0       	ldi	r23, 0x03	; 3
+     3b0:	92 da       	rcall	.-2780   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     3b2:	ac 01       	movw	r20, r24
+     3b4:	66 27       	eor	r22, r22
+     3b6:	57 fd       	sbrc	r21, 7
+     3b8:	60 95       	com	r22
+     3ba:	76 2f       	mov	r23, r22
+     3bc:	40 0f       	add	r20, r16
+     3be:	51 1f       	adc	r21, r17
+     3c0:	62 1f       	adc	r22, r18
+     3c2:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     3c4:	40 32       	cpi	r20, 0x20	; 32
+     3c6:	83 e0       	ldi	r24, 0x03	; 3
+     3c8:	58 07       	cpc	r21, r24
+     3ca:	80 e0       	ldi	r24, 0x00	; 0
+     3cc:	68 07       	cpc	r22, r24
+     3ce:	80 e0       	ldi	r24, 0x00	; 0
+     3d0:	78 07       	cpc	r23, r24
+     3d2:	0c f4       	brge	.+2      	; 0x3d6 <randomplay+0xd0>
+     3d4:	c6 c1       	rjmp	.+908    	; 0x762 <randomplay+0x45c>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     3d6:	81 e0       	ldi	r24, 0x01	; 1
+     3d8:	90 e0       	ldi	r25, 0x00	; 0
+     3da:	90 93 89 00 	sts	0x0089, r25
+     3de:	80 93 88 00 	sts	0x0088, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     3e2:	6a da       	rcall	.-2860   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     3e4:	00 91 79 00 	lds	r16, 0x0079
+     3e8:	10 91 7a 00 	lds	r17, 0x007A
+     3ec:	20 91 7b 00 	lds	r18, 0x007B
+     3f0:	30 91 7c 00 	lds	r19, 0x007C
+     3f4:	68 ee       	ldi	r22, 0xE8	; 232
+     3f6:	73 e0       	ldi	r23, 0x03	; 3
+     3f8:	6e da       	rcall	.-2852   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     3fa:	ac 01       	movw	r20, r24
+     3fc:	66 27       	eor	r22, r22
+     3fe:	57 fd       	sbrc	r21, 7
+     400:	60 95       	com	r22
+     402:	76 2f       	mov	r23, r22
+     404:	40 0f       	add	r20, r16
+     406:	51 1f       	adc	r21, r17
+     408:	62 1f       	adc	r22, r18
+     40a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     40c:	40 32       	cpi	r20, 0x20	; 32
+     40e:	83 e0       	ldi	r24, 0x03	; 3
+     410:	58 07       	cpc	r21, r24
+     412:	80 e0       	ldi	r24, 0x00	; 0
+     414:	68 07       	cpc	r22, r24
+     416:	80 e0       	ldi	r24, 0x00	; 0
+     418:	78 07       	cpc	r23, r24
+     41a:	0c f4       	brge	.+2      	; 0x41e <randomplay+0x118>
+     41c:	97 c1       	rjmp	.+814    	; 0x74c <randomplay+0x446>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     41e:	81 e0       	ldi	r24, 0x01	; 1
+     420:	90 e0       	ldi	r25, 0x00	; 0
+     422:	90 93 8b 00 	sts	0x008B, r25
+     426:	80 93 8a 00 	sts	0x008A, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     42a:	46 da       	rcall	.-2932   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     42c:	00 91 79 00 	lds	r16, 0x0079
+     430:	10 91 7a 00 	lds	r17, 0x007A
+     434:	20 91 7b 00 	lds	r18, 0x007B
+     438:	30 91 7c 00 	lds	r19, 0x007C
+     43c:	68 ee       	ldi	r22, 0xE8	; 232
+     43e:	73 e0       	ldi	r23, 0x03	; 3
+     440:	4a da       	rcall	.-2924   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     442:	ac 01       	movw	r20, r24
+     444:	66 27       	eor	r22, r22
+     446:	57 fd       	sbrc	r21, 7
+     448:	60 95       	com	r22
+     44a:	76 2f       	mov	r23, r22
+     44c:	40 0f       	add	r20, r16
+     44e:	51 1f       	adc	r21, r17
+     450:	62 1f       	adc	r22, r18
+     452:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     454:	40 32       	cpi	r20, 0x20	; 32
+     456:	83 e0       	ldi	r24, 0x03	; 3
+     458:	58 07       	cpc	r21, r24
+     45a:	80 e0       	ldi	r24, 0x00	; 0
+     45c:	68 07       	cpc	r22, r24
+     45e:	80 e0       	ldi	r24, 0x00	; 0
+     460:	78 07       	cpc	r23, r24
+     462:	0c f4       	brge	.+2      	; 0x466 <randomplay+0x160>
+     464:	68 c1       	rjmp	.+720    	; 0x736 <randomplay+0x430>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     466:	81 e0       	ldi	r24, 0x01	; 1
+     468:	90 e0       	ldi	r25, 0x00	; 0
+     46a:	90 93 8d 00 	sts	0x008D, r25
+     46e:	80 93 8c 00 	sts	0x008C, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     472:	22 da       	rcall	.-3004   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     474:	00 91 79 00 	lds	r16, 0x0079
+     478:	10 91 7a 00 	lds	r17, 0x007A
+     47c:	20 91 7b 00 	lds	r18, 0x007B
+     480:	30 91 7c 00 	lds	r19, 0x007C
+     484:	68 ee       	ldi	r22, 0xE8	; 232
+     486:	73 e0       	ldi	r23, 0x03	; 3
+     488:	26 da       	rcall	.-2996   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     48a:	ac 01       	movw	r20, r24
+     48c:	66 27       	eor	r22, r22
+     48e:	57 fd       	sbrc	r21, 7
+     490:	60 95       	com	r22
+     492:	76 2f       	mov	r23, r22
+     494:	40 0f       	add	r20, r16
+     496:	51 1f       	adc	r21, r17
+     498:	62 1f       	adc	r22, r18
+     49a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     49c:	40 32       	cpi	r20, 0x20	; 32
+     49e:	83 e0       	ldi	r24, 0x03	; 3
+     4a0:	58 07       	cpc	r21, r24
+     4a2:	80 e0       	ldi	r24, 0x00	; 0
+     4a4:	68 07       	cpc	r22, r24
+     4a6:	80 e0       	ldi	r24, 0x00	; 0
+     4a8:	78 07       	cpc	r23, r24
+     4aa:	0c f4       	brge	.+2      	; 0x4ae <randomplay+0x1a8>
+     4ac:	39 c1       	rjmp	.+626    	; 0x720 <randomplay+0x41a>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     4ae:	81 e0       	ldi	r24, 0x01	; 1
+     4b0:	90 e0       	ldi	r25, 0x00	; 0
+     4b2:	90 93 8f 00 	sts	0x008F, r25
+     4b6:	80 93 8e 00 	sts	0x008E, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     4ba:	fe d9       	rcall	.-3076   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     4bc:	00 91 79 00 	lds	r16, 0x0079
+     4c0:	10 91 7a 00 	lds	r17, 0x007A
+     4c4:	20 91 7b 00 	lds	r18, 0x007B
+     4c8:	30 91 7c 00 	lds	r19, 0x007C
+     4cc:	68 ee       	ldi	r22, 0xE8	; 232
+     4ce:	73 e0       	ldi	r23, 0x03	; 3
+     4d0:	02 da       	rcall	.-3068   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     4d2:	ac 01       	movw	r20, r24
+     4d4:	66 27       	eor	r22, r22
+     4d6:	57 fd       	sbrc	r21, 7
+     4d8:	60 95       	com	r22
+     4da:	76 2f       	mov	r23, r22
+     4dc:	40 0f       	add	r20, r16
+     4de:	51 1f       	adc	r21, r17
+     4e0:	62 1f       	adc	r22, r18
+     4e2:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     4e4:	40 32       	cpi	r20, 0x20	; 32
+     4e6:	83 e0       	ldi	r24, 0x03	; 3
+     4e8:	58 07       	cpc	r21, r24
+     4ea:	80 e0       	ldi	r24, 0x00	; 0
+     4ec:	68 07       	cpc	r22, r24
+     4ee:	80 e0       	ldi	r24, 0x00	; 0
+     4f0:	78 07       	cpc	r23, r24
+     4f2:	0c f4       	brge	.+2      	; 0x4f6 <randomplay+0x1f0>
+     4f4:	0a c1       	rjmp	.+532    	; 0x70a <randomplay+0x404>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     4f6:	81 e0       	ldi	r24, 0x01	; 1
+     4f8:	90 e0       	ldi	r25, 0x00	; 0
+     4fa:	90 93 91 00 	sts	0x0091, r25
+     4fe:	80 93 90 00 	sts	0x0090, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     502:	da d9       	rcall	.-3148   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     504:	00 91 79 00 	lds	r16, 0x0079
+     508:	10 91 7a 00 	lds	r17, 0x007A
+     50c:	20 91 7b 00 	lds	r18, 0x007B
+     510:	30 91 7c 00 	lds	r19, 0x007C
+     514:	68 ee       	ldi	r22, 0xE8	; 232
+     516:	73 e0       	ldi	r23, 0x03	; 3
+     518:	de d9       	rcall	.-3140   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     51a:	ac 01       	movw	r20, r24
+     51c:	66 27       	eor	r22, r22
+     51e:	57 fd       	sbrc	r21, 7
+     520:	60 95       	com	r22
+     522:	76 2f       	mov	r23, r22
+     524:	40 0f       	add	r20, r16
+     526:	51 1f       	adc	r21, r17
+     528:	62 1f       	adc	r22, r18
+     52a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     52c:	40 32       	cpi	r20, 0x20	; 32
+     52e:	83 e0       	ldi	r24, 0x03	; 3
+     530:	58 07       	cpc	r21, r24
+     532:	80 e0       	ldi	r24, 0x00	; 0
+     534:	68 07       	cpc	r22, r24
+     536:	80 e0       	ldi	r24, 0x00	; 0
+     538:	78 07       	cpc	r23, r24
+     53a:	0c f4       	brge	.+2      	; 0x53e <randomplay+0x238>
+     53c:	db c0       	rjmp	.+438    	; 0x6f4 <randomplay+0x3ee>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     53e:	81 e0       	ldi	r24, 0x01	; 1
+     540:	90 e0       	ldi	r25, 0x00	; 0
+     542:	90 93 93 00 	sts	0x0093, r25
+     546:	80 93 92 00 	sts	0x0092, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     54a:	b6 d9       	rcall	.-3220   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     54c:	00 91 79 00 	lds	r16, 0x0079
+     550:	10 91 7a 00 	lds	r17, 0x007A
+     554:	20 91 7b 00 	lds	r18, 0x007B
+     558:	30 91 7c 00 	lds	r19, 0x007C
+     55c:	68 ee       	ldi	r22, 0xE8	; 232
+     55e:	73 e0       	ldi	r23, 0x03	; 3
+     560:	ba d9       	rcall	.-3212   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     562:	ac 01       	movw	r20, r24
+     564:	66 27       	eor	r22, r22
+     566:	57 fd       	sbrc	r21, 7
+     568:	60 95       	com	r22
+     56a:	76 2f       	mov	r23, r22
+     56c:	40 0f       	add	r20, r16
+     56e:	51 1f       	adc	r21, r17
+     570:	62 1f       	adc	r22, r18
+     572:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     574:	40 32       	cpi	r20, 0x20	; 32
+     576:	83 e0       	ldi	r24, 0x03	; 3
+     578:	58 07       	cpc	r21, r24
+     57a:	80 e0       	ldi	r24, 0x00	; 0
+     57c:	68 07       	cpc	r22, r24
+     57e:	80 e0       	ldi	r24, 0x00	; 0
+     580:	78 07       	cpc	r23, r24
+     582:	0c f4       	brge	.+2      	; 0x586 <randomplay+0x280>
+     584:	ac c0       	rjmp	.+344    	; 0x6de <randomplay+0x3d8>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     586:	81 e0       	ldi	r24, 0x01	; 1
+     588:	90 e0       	ldi	r25, 0x00	; 0
+     58a:	90 93 95 00 	sts	0x0095, r25
+     58e:	80 93 94 00 	sts	0x0094, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     592:	92 d9       	rcall	.-3292   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     594:	00 91 79 00 	lds	r16, 0x0079
+     598:	10 91 7a 00 	lds	r17, 0x007A
+     59c:	20 91 7b 00 	lds	r18, 0x007B
+     5a0:	30 91 7c 00 	lds	r19, 0x007C
+     5a4:	68 ee       	ldi	r22, 0xE8	; 232
+     5a6:	73 e0       	ldi	r23, 0x03	; 3
+     5a8:	96 d9       	rcall	.-3284   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     5aa:	ac 01       	movw	r20, r24
+     5ac:	66 27       	eor	r22, r22
+     5ae:	57 fd       	sbrc	r21, 7
+     5b0:	60 95       	com	r22
+     5b2:	76 2f       	mov	r23, r22
+     5b4:	40 0f       	add	r20, r16
+     5b6:	51 1f       	adc	r21, r17
+     5b8:	62 1f       	adc	r22, r18
+     5ba:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     5bc:	40 32       	cpi	r20, 0x20	; 32
+     5be:	83 e0       	ldi	r24, 0x03	; 3
+     5c0:	58 07       	cpc	r21, r24
+     5c2:	80 e0       	ldi	r24, 0x00	; 0
+     5c4:	68 07       	cpc	r22, r24
+     5c6:	80 e0       	ldi	r24, 0x00	; 0
+     5c8:	78 07       	cpc	r23, r24
+     5ca:	0c f4       	brge	.+2      	; 0x5ce <randomplay+0x2c8>
+     5cc:	7d c0       	rjmp	.+250    	; 0x6c8 <randomplay+0x3c2>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     5ce:	81 e0       	ldi	r24, 0x01	; 1
+     5d0:	90 e0       	ldi	r25, 0x00	; 0
+     5d2:	90 93 97 00 	sts	0x0097, r25
+     5d6:	80 93 96 00 	sts	0x0096, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     5da:	6e d9       	rcall	.-3364   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     5dc:	00 91 79 00 	lds	r16, 0x0079
+     5e0:	10 91 7a 00 	lds	r17, 0x007A
+     5e4:	20 91 7b 00 	lds	r18, 0x007B
+     5e8:	30 91 7c 00 	lds	r19, 0x007C
+     5ec:	68 ee       	ldi	r22, 0xE8	; 232
+     5ee:	73 e0       	ldi	r23, 0x03	; 3
+     5f0:	72 d9       	rcall	.-3356   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     5f2:	ac 01       	movw	r20, r24
+     5f4:	66 27       	eor	r22, r22
+     5f6:	57 fd       	sbrc	r21, 7
+     5f8:	60 95       	com	r22
+     5fa:	76 2f       	mov	r23, r22
+     5fc:	40 0f       	add	r20, r16
+     5fe:	51 1f       	adc	r21, r17
+     600:	62 1f       	adc	r22, r18
+     602:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     604:	40 32       	cpi	r20, 0x20	; 32
+     606:	83 e0       	ldi	r24, 0x03	; 3
+     608:	58 07       	cpc	r21, r24
+     60a:	80 e0       	ldi	r24, 0x00	; 0
+     60c:	68 07       	cpc	r22, r24
+     60e:	80 e0       	ldi	r24, 0x00	; 0
+     610:	78 07       	cpc	r23, r24
+     612:	0c f4       	brge	.+2      	; 0x616 <randomplay+0x310>
+     614:	4e c0       	rjmp	.+156    	; 0x6b2 <randomplay+0x3ac>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+     616:	81 e0       	ldi	r24, 0x01	; 1
+     618:	90 e0       	ldi	r25, 0x00	; 0
+     61a:	90 93 99 00 	sts	0x0099, r25
+     61e:	80 93 98 00 	sts	0x0098, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+     622:	4a d9       	rcall	.-3436   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     624:	00 91 79 00 	lds	r16, 0x0079
+     628:	10 91 7a 00 	lds	r17, 0x007A
+     62c:	20 91 7b 00 	lds	r18, 0x007B
+     630:	30 91 7c 00 	lds	r19, 0x007C
+     634:	68 ee       	ldi	r22, 0xE8	; 232
+     636:	73 e0       	ldi	r23, 0x03	; 3
+     638:	4e d9       	rcall	.-3428   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     63a:	ac 01       	movw	r20, r24
+     63c:	66 27       	eor	r22, r22
+     63e:	57 fd       	sbrc	r21, 7
+     640:	60 95       	com	r22
+     642:	76 2f       	mov	r23, r22
+     644:	40 0f       	add	r20, r16
+     646:	51 1f       	adc	r21, r17
+     648:	62 1f       	adc	r22, r18
+     64a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+     64c:	40 32       	cpi	r20, 0x20	; 32
+     64e:	83 e0       	ldi	r24, 0x03	; 3
+     650:	58 07       	cpc	r21, r24
+     652:	80 e0       	ldi	r24, 0x00	; 0
+     654:	68 07       	cpc	r22, r24
+     656:	80 e0       	ldi	r24, 0x00	; 0
+     658:	78 07       	cpc	r23, r24
+     65a:	14 f5       	brge	.+68     	; 0x6a0 <randomplay+0x39a>
+ flystatus[fly]=0;
+     65c:	10 92 9b 00 	sts	0x009B, r1
+     660:	10 92 9a 00 	sts	0x009A, r1
+	if (decide > 500 )
+     664:	45 5f       	subi	r20, 0xF5	; 245
+     666:	51 40       	sbci	r21, 0x01	; 1
+     668:	60 40       	sbci	r22, 0x00	; 0
+     66a:	70 40       	sbci	r23, 0x00	; 0
+     66c:	cc f4       	brge	.+50     	; 0x6a0 <randomplay+0x39a>
+ flystatus[fly]=1;
+}
+
+}
+     66e:	1f 91       	pop	r17
+     670:	0f 91       	pop	r16
+     672:	08 95       	ret
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     674:	10 92 87 00 	sts	0x0087, r1
+     678:	10 92 86 00 	sts	0x0086, r1
+	if (decide > 500 )
+     67c:	45 5f       	subi	r20, 0xF5	; 245
+     67e:	51 40       	sbci	r21, 0x01	; 1
+     680:	60 40       	sbci	r22, 0x00	; 0
+     682:	70 40       	sbci	r23, 0x00	; 0
+     684:	0c f4       	brge	.+2      	; 0x688 <randomplay+0x382>
+     686:	89 ce       	rjmp	.-750    	; 0x39a <randomplay+0x94>
+     688:	82 ce       	rjmp	.-764    	; 0x38e <randomplay+0x88>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     68a:	10 92 85 00 	sts	0x0085, r1
+     68e:	10 92 84 00 	sts	0x0084, r1
+	if (decide > 500 )
+     692:	45 5f       	subi	r20, 0xF5	; 245
+     694:	51 40       	sbci	r21, 0x01	; 1
+     696:	60 40       	sbci	r22, 0x00	; 0
+     698:	70 40       	sbci	r23, 0x00	; 0
+     69a:	0c f4       	brge	.+2      	; 0x69e <randomplay+0x398>
+     69c:	5a ce       	rjmp	.-844    	; 0x352 <randomplay+0x4c>
+     69e:	53 ce       	rjmp	.-858    	; 0x346 <randomplay+0x40>
+ flystatus[fly]=1;
+     6a0:	81 e0       	ldi	r24, 0x01	; 1
+     6a2:	90 e0       	ldi	r25, 0x00	; 0
+     6a4:	90 93 9b 00 	sts	0x009B, r25
+     6a8:	80 93 9a 00 	sts	0x009A, r24
+}
+
+}
+     6ac:	1f 91       	pop	r17
+     6ae:	0f 91       	pop	r16
+     6b0:	08 95       	ret
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     6b2:	10 92 99 00 	sts	0x0099, r1
+     6b6:	10 92 98 00 	sts	0x0098, r1
+	if (decide > 500 )
+     6ba:	45 5f       	subi	r20, 0xF5	; 245
+     6bc:	51 40       	sbci	r21, 0x01	; 1
+     6be:	60 40       	sbci	r22, 0x00	; 0
+     6c0:	70 40       	sbci	r23, 0x00	; 0
+     6c2:	0c f4       	brge	.+2      	; 0x6c6 <randomplay+0x3c0>
+     6c4:	ae cf       	rjmp	.-164    	; 0x622 <randomplay+0x31c>
+     6c6:	a7 cf       	rjmp	.-178    	; 0x616 <randomplay+0x310>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     6c8:	10 92 97 00 	sts	0x0097, r1
+     6cc:	10 92 96 00 	sts	0x0096, r1
+	if (decide > 500 )
+     6d0:	45 5f       	subi	r20, 0xF5	; 245
+     6d2:	51 40       	sbci	r21, 0x01	; 1
+     6d4:	60 40       	sbci	r22, 0x00	; 0
+     6d6:	70 40       	sbci	r23, 0x00	; 0
+     6d8:	0c f4       	brge	.+2      	; 0x6dc <randomplay+0x3d6>
+     6da:	7f cf       	rjmp	.-258    	; 0x5da <randomplay+0x2d4>
+     6dc:	78 cf       	rjmp	.-272    	; 0x5ce <randomplay+0x2c8>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     6de:	10 92 95 00 	sts	0x0095, r1
+     6e2:	10 92 94 00 	sts	0x0094, r1
+	if (decide > 500 )
+     6e6:	45 5f       	subi	r20, 0xF5	; 245
+     6e8:	51 40       	sbci	r21, 0x01	; 1
+     6ea:	60 40       	sbci	r22, 0x00	; 0
+     6ec:	70 40       	sbci	r23, 0x00	; 0
+     6ee:	0c f4       	brge	.+2      	; 0x6f2 <randomplay+0x3ec>
+     6f0:	50 cf       	rjmp	.-352    	; 0x592 <randomplay+0x28c>
+     6f2:	49 cf       	rjmp	.-366    	; 0x586 <randomplay+0x280>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     6f4:	10 92 93 00 	sts	0x0093, r1
+     6f8:	10 92 92 00 	sts	0x0092, r1
+	if (decide > 500 )
+     6fc:	45 5f       	subi	r20, 0xF5	; 245
+     6fe:	51 40       	sbci	r21, 0x01	; 1
+     700:	60 40       	sbci	r22, 0x00	; 0
+     702:	70 40       	sbci	r23, 0x00	; 0
+     704:	0c f4       	brge	.+2      	; 0x708 <randomplay+0x402>
+     706:	21 cf       	rjmp	.-446    	; 0x54a <randomplay+0x244>
+     708:	1a cf       	rjmp	.-460    	; 0x53e <randomplay+0x238>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     70a:	10 92 91 00 	sts	0x0091, r1
+     70e:	10 92 90 00 	sts	0x0090, r1
+	if (decide > 500 )
+     712:	45 5f       	subi	r20, 0xF5	; 245
+     714:	51 40       	sbci	r21, 0x01	; 1
+     716:	60 40       	sbci	r22, 0x00	; 0
+     718:	70 40       	sbci	r23, 0x00	; 0
+     71a:	0c f4       	brge	.+2      	; 0x71e <randomplay+0x418>
+     71c:	f2 ce       	rjmp	.-540    	; 0x502 <randomplay+0x1fc>
+     71e:	eb ce       	rjmp	.-554    	; 0x4f6 <randomplay+0x1f0>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     720:	10 92 8f 00 	sts	0x008F, r1
+     724:	10 92 8e 00 	sts	0x008E, r1
+	if (decide > 500 )
+     728:	45 5f       	subi	r20, 0xF5	; 245
+     72a:	51 40       	sbci	r21, 0x01	; 1
+     72c:	60 40       	sbci	r22, 0x00	; 0
+     72e:	70 40       	sbci	r23, 0x00	; 0
+     730:	0c f4       	brge	.+2      	; 0x734 <randomplay+0x42e>
+     732:	c3 ce       	rjmp	.-634    	; 0x4ba <randomplay+0x1b4>
+     734:	bc ce       	rjmp	.-648    	; 0x4ae <randomplay+0x1a8>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     736:	10 92 8d 00 	sts	0x008D, r1
+     73a:	10 92 8c 00 	sts	0x008C, r1
+	if (decide > 500 )
+     73e:	45 5f       	subi	r20, 0xF5	; 245
+     740:	51 40       	sbci	r21, 0x01	; 1
+     742:	60 40       	sbci	r22, 0x00	; 0
+     744:	70 40       	sbci	r23, 0x00	; 0
+     746:	0c f4       	brge	.+2      	; 0x74a <randomplay+0x444>
+     748:	94 ce       	rjmp	.-728    	; 0x472 <randomplay+0x16c>
+     74a:	8d ce       	rjmp	.-742    	; 0x466 <randomplay+0x160>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     74c:	10 92 8b 00 	sts	0x008B, r1
+     750:	10 92 8a 00 	sts	0x008A, r1
+	if (decide > 500 )
+     754:	45 5f       	subi	r20, 0xF5	; 245
+     756:	51 40       	sbci	r21, 0x01	; 1
+     758:	60 40       	sbci	r22, 0x00	; 0
+     75a:	70 40       	sbci	r23, 0x00	; 0
+     75c:	0c f4       	brge	.+2      	; 0x760 <randomplay+0x45a>
+     75e:	65 ce       	rjmp	.-822    	; 0x42a <randomplay+0x124>
+     760:	5e ce       	rjmp	.-836    	; 0x41e <randomplay+0x118>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+     762:	10 92 89 00 	sts	0x0089, r1
+     766:	10 92 88 00 	sts	0x0088, r1
+	if (decide > 500 )
+     76a:	45 5f       	subi	r20, 0xF5	; 245
+     76c:	51 40       	sbci	r21, 0x01	; 1
+     76e:	60 40       	sbci	r22, 0x00	; 0
+     770:	70 40       	sbci	r23, 0x00	; 0
+     772:	0c f4       	brge	.+2      	; 0x776 <randomplay+0x470>
+     774:	36 ce       	rjmp	.-916    	; 0x3e2 <randomplay+0xdc>
+     776:	2f ce       	rjmp	.-930    	; 0x3d6 <randomplay+0xd0>
+
+00000778 <main>:
+    MCUSR = 0;
+    wdt_disable();
+}
+void check_if_sleepy(void);
+int main()
+{
+     778:	0f 93       	push	r16
+     77a:	1f 93       	push	r17
+     77c:	cf 93       	push	r28
+     77e:	df 93       	push	r29
+void get_mcusr(void) \
+     __attribute__((naked)) \
+     __attribute__((section(".init3")));
+void get_mcusr(void)
+{
+    mcusr_mirror = MCUSR;
+     780:	84 b7       	in	r24, 0x34	; 52
+     782:	80 93 e3 00 	sts	0x00E3, r24
+    MCUSR = 0;
+     786:	14 be       	out	0x34, r1	; 52
+    wdt_disable();
+     788:	88 e1       	ldi	r24, 0x18	; 24
+     78a:	0f b6       	in	r0, 0x3f	; 63
+     78c:	f8 94       	cli
+     78e:	81 bd       	out	0x21, r24	; 33
+     790:	11 bc       	out	0x21, r1	; 33
+     792:	0f be       	out	0x3f, r0	; 63
+int main()
+{
+	get_mcusr(); //Why did we wake up?
+
+
+        ADCSRA=0b10000000;                      //ADC Enable,ADC Start Conversion,division factor 128,Auto trigger enable
+     794:	80 e8       	ldi	r24, 0x80	; 128
+     796:	86 b9       	out	0x06, r24	; 6
+        sbi(MCUCR, PUD);
+     798:	85 b7       	in	r24, 0x35	; 53
+     79a:	80 64       	ori	r24, 0x40	; 64
+     79c:	85 bf       	out	0x35, r24	; 53
+    	// PB0, PB1, PB3, PB4 are output
+	// PB2 is the sensor
+	//setup
+	TCCR0A = 0x00;  //Timer/Counter Control Register A (normal operation 0)
+     79e:	1a bc       	out	0x2a, r1	; 42
+	TCCR0B = 0x05;  //Timer/Counter Control Register B (2 = clkI/O/8 (From prescaler))
+     7a0:	85 e0       	ldi	r24, 0x05	; 5
+     7a2:	83 bf       	out	0x33, r24	; 51
+	TIMSK = 0x02;   //Timer/Counter Interrupt Mask Register  (2 = Timer/Counter1 Overflow Interrupt Enable)
+     7a4:	82 e0       	ldi	r24, 0x02	; 2
+     7a6:	89 bf       	out	0x39, r24	; 57
+	DDRB = 0x1b;    //Port B Data Direction Register
+     7a8:	8b e1       	ldi	r24, 0x1B	; 27
+     7aa:	87 bb       	out	0x17, r24	; 23
+			//1e = DDB4 DDB3 DDB2 DDB1 are outputs?
+	PORTB = 0x1b;   //Port B Data Register
+     7ac:	88 bb       	out	0x18, r24	; 24
+			//1e = DDB4 DDB3 DDB2 DDB1 are inputs?
+			//DD PO IO     Pullup  Comment
+			//1  1  Output No      Output High (Source) (page 57)
+	
+
+	sei();  //Set Interrupst enabled
+     7ae:	78 94       	sei
+	
+
+//	testpattern();
+	wdt_enable(WDTO_8S);
+     7b0:	29 e2       	ldi	r18, 0x29	; 41
+     7b2:	88 e1       	ldi	r24, 0x18	; 24
+     7b4:	90 e0       	ldi	r25, 0x00	; 0
+     7b6:	0f b6       	in	r0, 0x3f	; 63
+     7b8:	f8 94       	cli
+     7ba:	a8 95       	wdr
+     7bc:	81 bd       	out	0x21, r24	; 33
+     7be:	0f be       	out	0x3f, r0	; 63
+     7c0:	21 bd       	out	0x21, r18	; 33
+     7c2:	41 e0       	ldi	r20, 0x01	; 1
+     7c4:	20 e0       	ldi	r18, 0x00	; 0
+     7c6:	30 e0       	ldi	r19, 0x00	; 0
+      		     else
+      		 {
+   	         currentstate[j]=0;
+      		 }
+		DDRB = 0;
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     7c8:	c1 e0       	ldi	r28, 0x01	; 1
+     7ca:	d0 e0       	ldi	r29, 0x00	; 0
+     7cc:	02 c0       	rjmp	.+4      	; 0x7d2 <main+0x5a>
+
+
+
+void check_if_sleepy(){
+bool readyforbed = true;
+for(int j = 0; j < NumberOfFlys; j++)
+     7ce:	2f 5f       	subi	r18, 0xFF	; 255
+     7d0:	3f 4f       	sbci	r19, 0xFF	; 255
+     7d2:	2c 30       	cpi	r18, 0x0C	; 12
+     7d4:	31 05       	cpc	r19, r1
+     7d6:	5c f4       	brge	.+22     	; 0x7ee <main+0x76>
+     {
+	if ( flystatus[j] == 1 )
+     7d8:	f9 01       	movw	r30, r18
+     7da:	ee 0f       	add	r30, r30
+     7dc:	ff 1f       	adc	r31, r31
+     7de:	ec 57       	subi	r30, 0x7C	; 124
+     7e0:	ff 4f       	sbci	r31, 0xFF	; 255
+     7e2:	80 81       	ld	r24, Z
+     7e4:	91 81       	ldd	r25, Z+1	; 0x01
+     7e6:	01 97       	sbiw	r24, 0x01	; 1
+     7e8:	91 f7       	brne	.-28     	; 0x7ce <main+0x56>
+     7ea:	40 e0       	ldi	r20, 0x00	; 0
+     7ec:	f0 cf       	rjmp	.-32     	; 0x7ce <main+0x56>
+	readyforbed=false;
+     }
+if ( lightness_counter < 10 )
+     7ee:	80 91 82 00 	lds	r24, 0x0082
+     7f2:	90 91 83 00 	lds	r25, 0x0083
+     7f6:	0a 97       	sbiw	r24, 0x0a	; 10
+     7f8:	0c f4       	brge	.+2      	; 0x7fc <main+0x84>
+     7fa:	40 e0       	ldi	r20, 0x00	; 0
+	readyforbed=false;
+cli();
+     7fc:	f8 94       	cli
+if ( readyforbed==true )
+     7fe:	44 23       	and	r20, r20
+     800:	a1 f0       	breq	.+40     	; 0x82a <main+0xb2>
+{ 
+     DDRB = 0;
+     802:	17 ba       	out	0x17, r1	; 23
+//     PORTB = 1<<anode[0]|0<<cathode[0];
+ //    DDRB = 1<<anode[0]|1<<cathode[0];
+
+     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+     804:	85 b7       	in	r24, 0x35	; 53
+     806:	87 7e       	andi	r24, 0xE7	; 231
+     808:	80 61       	ori	r24, 0x10	; 16
+     80a:	85 bf       	out	0x35, r24	; 53
+     sleep_mode();
+     80c:	85 b7       	in	r24, 0x35	; 53
+     80e:	80 62       	ori	r24, 0x20	; 32
+     810:	85 bf       	out	0x35, r24	; 53
+     812:	88 95       	sleep
+     814:	85 b7       	in	r24, 0x35	; 53
+     816:	8f 7d       	andi	r24, 0xDF	; 223
+     818:	85 bf       	out	0x35, r24	; 53
+     sleep_enable();
+     81a:	85 b7       	in	r24, 0x35	; 53
+     81c:	80 62       	ori	r24, 0x20	; 32
+     81e:	85 bf       	out	0x35, r24	; 53
+     sei();
+     820:	78 94       	sei
+     sleep_cpu();
+     822:	88 95       	sleep
+     sleep_disable();
+     824:	85 b7       	in	r24, 0x35	; 53
+     826:	8f 7d       	andi	r24, 0xDF	; 223
+     828:	85 bf       	out	0x35, r24	; 53
+}
+sei();
+     82a:	78 94       	sei
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     82c:	80 91 84 00 	lds	r24, 0x0084
+     830:	90 91 85 00 	lds	r25, 0x0085
+     834:	01 97       	sbiw	r24, 0x01	; 1
+     836:	09 f4       	brne	.+2      	; 0x83a <main+0xc2>
+     838:	23 c4       	rjmp	.+2118   	; 0x1080 <main+0x908>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     83a:	80 91 b4 00 	lds	r24, 0x00B4
+     83e:	90 91 b5 00 	lds	r25, 0x00B5
+     842:	18 16       	cp	r1, r24
+     844:	19 06       	cpc	r1, r25
+     846:	4c f4       	brge	.+18     	; 0x85a <main+0xe2>
+     848:	80 91 b4 00 	lds	r24, 0x00B4
+     84c:	90 91 b5 00 	lds	r25, 0x00B5
+     850:	0a 97       	sbiw	r24, 0x0a	; 10
+     852:	90 93 b5 00 	sts	0x00B5, r25
+     856:	80 93 b4 00 	sts	0x00B4, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     85a:	00 91 b4 00 	lds	r16, 0x00B4
+     85e:	10 91 b5 00 	lds	r17, 0x00B5
+     862:	2a d8       	rcall	.-4012   	; 0xfffff8b8 <__eeprom_end+0xff7ef8b8>
+     864:	60 e0       	ldi	r22, 0x00	; 0
+     866:	72 e0       	ldi	r23, 0x02	; 2
+     868:	36 d8       	rcall	.-3988   	; 0xfffff8d6 <__eeprom_end+0xff7ef8d6>
+     86a:	80 17       	cp	r24, r16
+     86c:	91 07       	cpc	r25, r17
+     86e:	0c f4       	brge	.+2      	; 0x872 <main+0xfa>
+     870:	f0 c3       	rjmp	.+2016   	; 0x1052 <main+0x8da>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     872:	10 92 9d 00 	sts	0x009D, r1
+     876:	10 92 9c 00 	sts	0x009C, r1
+      		 }
+		DDRB = 0;
+     87a:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     87c:	20 91 61 00 	lds	r18, 0x0061
+     880:	80 91 9c 00 	lds	r24, 0x009C
+     884:	90 91 9d 00 	lds	r25, 0x009D
+     888:	40 91 6d 00 	lds	r20, 0x006D
+     88c:	80 95       	com	r24
+     88e:	90 95       	com	r25
+     890:	02 c0       	rjmp	.+4      	; 0x896 <main+0x11e>
+     892:	88 0f       	add	r24, r24
+     894:	99 1f       	adc	r25, r25
+     896:	4a 95       	dec	r20
+     898:	e2 f7       	brpl	.-8      	; 0x892 <main+0x11a>
+     89a:	ae 01       	movw	r20, r28
+     89c:	02 c0       	rjmp	.+4      	; 0x8a2 <main+0x12a>
+     89e:	44 0f       	add	r20, r20
+     8a0:	55 1f       	adc	r21, r21
+     8a2:	2a 95       	dec	r18
+     8a4:	e2 f7       	brpl	.-8      	; 0x89e <main+0x126>
+     8a6:	84 2b       	or	r24, r20
+     8a8:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     8aa:	20 91 61 00 	lds	r18, 0x0061
+     8ae:	80 91 6d 00 	lds	r24, 0x006D
+     8b2:	ae 01       	movw	r20, r28
+     8b4:	02 c0       	rjmp	.+4      	; 0x8ba <main+0x142>
+     8b6:	44 0f       	add	r20, r20
+     8b8:	55 1f       	adc	r21, r21
+     8ba:	8a 95       	dec	r24
+     8bc:	e2 f7       	brpl	.-8      	; 0x8b6 <main+0x13e>
+     8be:	ca 01       	movw	r24, r20
+     8c0:	ae 01       	movw	r20, r28
+     8c2:	02 c0       	rjmp	.+4      	; 0x8c8 <main+0x150>
+     8c4:	44 0f       	add	r20, r20
+     8c6:	55 1f       	adc	r21, r21
+     8c8:	2a 95       	dec	r18
+     8ca:	e2 f7       	brpl	.-8      	; 0x8c4 <main+0x14c>
+     8cc:	84 2b       	or	r24, r20
+     8ce:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     8d0:	80 91 86 00 	lds	r24, 0x0086
+     8d4:	90 91 87 00 	lds	r25, 0x0087
+     8d8:	01 97       	sbiw	r24, 0x01	; 1
+     8da:	09 f4       	brne	.+2      	; 0x8de <main+0x166>
+     8dc:	bf c3       	rjmp	.+1918   	; 0x105c <main+0x8e4>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     8de:	80 91 b6 00 	lds	r24, 0x00B6
+     8e2:	90 91 b7 00 	lds	r25, 0x00B7
+     8e6:	18 16       	cp	r1, r24
+     8e8:	19 06       	cpc	r1, r25
+     8ea:	4c f4       	brge	.+18     	; 0x8fe <main+0x186>
+     8ec:	80 91 b6 00 	lds	r24, 0x00B6
+     8f0:	90 91 b7 00 	lds	r25, 0x00B7
+     8f4:	0a 97       	sbiw	r24, 0x0a	; 10
+     8f6:	90 93 b7 00 	sts	0x00B7, r25
+     8fa:	80 93 b6 00 	sts	0x00B6, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     8fe:	00 91 b6 00 	lds	r16, 0x00B6
+     902:	10 91 b7 00 	lds	r17, 0x00B7
+     906:	d8 d7       	rcall	.+4016   	; 0x18b8 <rand>
+     908:	60 e0       	ldi	r22, 0x00	; 0
+     90a:	72 e0       	ldi	r23, 0x02	; 2
+     90c:	e4 d7       	rcall	.+4040   	; 0x18d6 <__divmodhi4>
+     90e:	80 17       	cp	r24, r16
+     910:	91 07       	cpc	r25, r17
+     912:	0c f4       	brge	.+2      	; 0x916 <main+0x19e>
+     914:	99 c3       	rjmp	.+1842   	; 0x1048 <main+0x8d0>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     916:	10 92 9f 00 	sts	0x009F, r1
+     91a:	10 92 9e 00 	sts	0x009E, r1
+      		 }
+		DDRB = 0;
+     91e:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     920:	20 91 62 00 	lds	r18, 0x0062
+     924:	80 91 9e 00 	lds	r24, 0x009E
+     928:	90 91 9f 00 	lds	r25, 0x009F
+     92c:	40 91 6e 00 	lds	r20, 0x006E
+     930:	80 95       	com	r24
+     932:	90 95       	com	r25
+     934:	02 c0       	rjmp	.+4      	; 0x93a <main+0x1c2>
+     936:	88 0f       	add	r24, r24
+     938:	99 1f       	adc	r25, r25
+     93a:	4a 95       	dec	r20
+     93c:	e2 f7       	brpl	.-8      	; 0x936 <main+0x1be>
+     93e:	ae 01       	movw	r20, r28
+     940:	02 c0       	rjmp	.+4      	; 0x946 <main+0x1ce>
+     942:	44 0f       	add	r20, r20
+     944:	55 1f       	adc	r21, r21
+     946:	2a 95       	dec	r18
+     948:	e2 f7       	brpl	.-8      	; 0x942 <main+0x1ca>
+     94a:	84 2b       	or	r24, r20
+     94c:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     94e:	20 91 62 00 	lds	r18, 0x0062
+     952:	80 91 6e 00 	lds	r24, 0x006E
+     956:	ae 01       	movw	r20, r28
+     958:	02 c0       	rjmp	.+4      	; 0x95e <main+0x1e6>
+     95a:	44 0f       	add	r20, r20
+     95c:	55 1f       	adc	r21, r21
+     95e:	8a 95       	dec	r24
+     960:	e2 f7       	brpl	.-8      	; 0x95a <main+0x1e2>
+     962:	ca 01       	movw	r24, r20
+     964:	ae 01       	movw	r20, r28
+     966:	02 c0       	rjmp	.+4      	; 0x96c <main+0x1f4>
+     968:	44 0f       	add	r20, r20
+     96a:	55 1f       	adc	r21, r21
+     96c:	2a 95       	dec	r18
+     96e:	e2 f7       	brpl	.-8      	; 0x968 <main+0x1f0>
+     970:	84 2b       	or	r24, r20
+     972:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     974:	80 91 88 00 	lds	r24, 0x0088
+     978:	90 91 89 00 	lds	r25, 0x0089
+     97c:	01 97       	sbiw	r24, 0x01	; 1
+     97e:	09 f4       	brne	.+2      	; 0x982 <main+0x20a>
+     980:	a3 c3       	rjmp	.+1862   	; 0x10c8 <main+0x950>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     982:	80 91 b8 00 	lds	r24, 0x00B8
+     986:	90 91 b9 00 	lds	r25, 0x00B9
+     98a:	18 16       	cp	r1, r24
+     98c:	19 06       	cpc	r1, r25
+     98e:	4c f4       	brge	.+18     	; 0x9a2 <main+0x22a>
+     990:	80 91 b8 00 	lds	r24, 0x00B8
+     994:	90 91 b9 00 	lds	r25, 0x00B9
+     998:	0a 97       	sbiw	r24, 0x0a	; 10
+     99a:	90 93 b9 00 	sts	0x00B9, r25
+     99e:	80 93 b8 00 	sts	0x00B8, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     9a2:	00 91 b8 00 	lds	r16, 0x00B8
+     9a6:	10 91 b9 00 	lds	r17, 0x00B9
+     9aa:	86 d7       	rcall	.+3852   	; 0x18b8 <rand>
+     9ac:	60 e0       	ldi	r22, 0x00	; 0
+     9ae:	72 e0       	ldi	r23, 0x02	; 2
+     9b0:	92 d7       	rcall	.+3876   	; 0x18d6 <__divmodhi4>
+     9b2:	80 17       	cp	r24, r16
+     9b4:	91 07       	cpc	r25, r17
+     9b6:	0c f4       	brge	.+2      	; 0x9ba <main+0x242>
+     9b8:	42 c3       	rjmp	.+1668   	; 0x103e <main+0x8c6>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     9ba:	10 92 a1 00 	sts	0x00A1, r1
+     9be:	10 92 a0 00 	sts	0x00A0, r1
+      		 }
+		DDRB = 0;
+     9c2:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     9c4:	20 91 63 00 	lds	r18, 0x0063
+     9c8:	80 91 a0 00 	lds	r24, 0x00A0
+     9cc:	90 91 a1 00 	lds	r25, 0x00A1
+     9d0:	40 91 6f 00 	lds	r20, 0x006F
+     9d4:	80 95       	com	r24
+     9d6:	90 95       	com	r25
+     9d8:	02 c0       	rjmp	.+4      	; 0x9de <main+0x266>
+     9da:	88 0f       	add	r24, r24
+     9dc:	99 1f       	adc	r25, r25
+     9de:	4a 95       	dec	r20
+     9e0:	e2 f7       	brpl	.-8      	; 0x9da <main+0x262>
+     9e2:	ae 01       	movw	r20, r28
+     9e4:	02 c0       	rjmp	.+4      	; 0x9ea <main+0x272>
+     9e6:	44 0f       	add	r20, r20
+     9e8:	55 1f       	adc	r21, r21
+     9ea:	2a 95       	dec	r18
+     9ec:	e2 f7       	brpl	.-8      	; 0x9e6 <main+0x26e>
+     9ee:	84 2b       	or	r24, r20
+     9f0:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     9f2:	20 91 63 00 	lds	r18, 0x0063
+     9f6:	80 91 6f 00 	lds	r24, 0x006F
+     9fa:	ae 01       	movw	r20, r28
+     9fc:	02 c0       	rjmp	.+4      	; 0xa02 <main+0x28a>
+     9fe:	44 0f       	add	r20, r20
+     a00:	55 1f       	adc	r21, r21
+     a02:	8a 95       	dec	r24
+     a04:	e2 f7       	brpl	.-8      	; 0x9fe <main+0x286>
+     a06:	ca 01       	movw	r24, r20
+     a08:	ae 01       	movw	r20, r28
+     a0a:	02 c0       	rjmp	.+4      	; 0xa10 <main+0x298>
+     a0c:	44 0f       	add	r20, r20
+     a0e:	55 1f       	adc	r21, r21
+     a10:	2a 95       	dec	r18
+     a12:	e2 f7       	brpl	.-8      	; 0xa0c <main+0x294>
+     a14:	84 2b       	or	r24, r20
+     a16:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     a18:	80 91 8a 00 	lds	r24, 0x008A
+     a1c:	90 91 8b 00 	lds	r25, 0x008B
+     a20:	01 97       	sbiw	r24, 0x01	; 1
+     a22:	09 f4       	brne	.+2      	; 0xa26 <main+0x2ae>
+     a24:	3f c3       	rjmp	.+1662   	; 0x10a4 <main+0x92c>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     a26:	80 91 ba 00 	lds	r24, 0x00BA
+     a2a:	90 91 bb 00 	lds	r25, 0x00BB
+     a2e:	18 16       	cp	r1, r24
+     a30:	19 06       	cpc	r1, r25
+     a32:	4c f4       	brge	.+18     	; 0xa46 <main+0x2ce>
+     a34:	80 91 ba 00 	lds	r24, 0x00BA
+     a38:	90 91 bb 00 	lds	r25, 0x00BB
+     a3c:	0a 97       	sbiw	r24, 0x0a	; 10
+     a3e:	90 93 bb 00 	sts	0x00BB, r25
+     a42:	80 93 ba 00 	sts	0x00BA, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     a46:	00 91 ba 00 	lds	r16, 0x00BA
+     a4a:	10 91 bb 00 	lds	r17, 0x00BB
+     a4e:	34 d7       	rcall	.+3688   	; 0x18b8 <rand>
+     a50:	60 e0       	ldi	r22, 0x00	; 0
+     a52:	72 e0       	ldi	r23, 0x02	; 2
+     a54:	40 d7       	rcall	.+3712   	; 0x18d6 <__divmodhi4>
+     a56:	80 17       	cp	r24, r16
+     a58:	91 07       	cpc	r25, r17
+     a5a:	0c f4       	brge	.+2      	; 0xa5e <main+0x2e6>
+     a5c:	eb c2       	rjmp	.+1494   	; 0x1034 <main+0x8bc>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     a5e:	10 92 a3 00 	sts	0x00A3, r1
+     a62:	10 92 a2 00 	sts	0x00A2, r1
+      		 }
+		DDRB = 0;
+     a66:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     a68:	20 91 64 00 	lds	r18, 0x0064
+     a6c:	80 91 a2 00 	lds	r24, 0x00A2
+     a70:	90 91 a3 00 	lds	r25, 0x00A3
+     a74:	40 91 70 00 	lds	r20, 0x0070
+     a78:	80 95       	com	r24
+     a7a:	90 95       	com	r25
+     a7c:	02 c0       	rjmp	.+4      	; 0xa82 <main+0x30a>
+     a7e:	88 0f       	add	r24, r24
+     a80:	99 1f       	adc	r25, r25
+     a82:	4a 95       	dec	r20
+     a84:	e2 f7       	brpl	.-8      	; 0xa7e <main+0x306>
+     a86:	ae 01       	movw	r20, r28
+     a88:	02 c0       	rjmp	.+4      	; 0xa8e <main+0x316>
+     a8a:	44 0f       	add	r20, r20
+     a8c:	55 1f       	adc	r21, r21
+     a8e:	2a 95       	dec	r18
+     a90:	e2 f7       	brpl	.-8      	; 0xa8a <main+0x312>
+     a92:	84 2b       	or	r24, r20
+     a94:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     a96:	20 91 64 00 	lds	r18, 0x0064
+     a9a:	80 91 70 00 	lds	r24, 0x0070
+     a9e:	ae 01       	movw	r20, r28
+     aa0:	02 c0       	rjmp	.+4      	; 0xaa6 <main+0x32e>
+     aa2:	44 0f       	add	r20, r20
+     aa4:	55 1f       	adc	r21, r21
+     aa6:	8a 95       	dec	r24
+     aa8:	e2 f7       	brpl	.-8      	; 0xaa2 <main+0x32a>
+     aaa:	ca 01       	movw	r24, r20
+     aac:	ae 01       	movw	r20, r28
+     aae:	02 c0       	rjmp	.+4      	; 0xab4 <main+0x33c>
+     ab0:	44 0f       	add	r20, r20
+     ab2:	55 1f       	adc	r21, r21
+     ab4:	2a 95       	dec	r18
+     ab6:	e2 f7       	brpl	.-8      	; 0xab0 <main+0x338>
+     ab8:	84 2b       	or	r24, r20
+     aba:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     abc:	80 91 8c 00 	lds	r24, 0x008C
+     ac0:	90 91 8d 00 	lds	r25, 0x008D
+     ac4:	01 97       	sbiw	r24, 0x01	; 1
+     ac6:	09 f4       	brne	.+2      	; 0xaca <main+0x352>
+     ac8:	23 c3       	rjmp	.+1606   	; 0x1110 <main+0x998>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     aca:	80 91 bc 00 	lds	r24, 0x00BC
+     ace:	90 91 bd 00 	lds	r25, 0x00BD
+     ad2:	18 16       	cp	r1, r24
+     ad4:	19 06       	cpc	r1, r25
+     ad6:	4c f4       	brge	.+18     	; 0xaea <main+0x372>
+     ad8:	80 91 bc 00 	lds	r24, 0x00BC
+     adc:	90 91 bd 00 	lds	r25, 0x00BD
+     ae0:	0a 97       	sbiw	r24, 0x0a	; 10
+     ae2:	90 93 bd 00 	sts	0x00BD, r25
+     ae6:	80 93 bc 00 	sts	0x00BC, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     aea:	00 91 bc 00 	lds	r16, 0x00BC
+     aee:	10 91 bd 00 	lds	r17, 0x00BD
+     af2:	e2 d6       	rcall	.+3524   	; 0x18b8 <rand>
+     af4:	60 e0       	ldi	r22, 0x00	; 0
+     af6:	72 e0       	ldi	r23, 0x02	; 2
+     af8:	ee d6       	rcall	.+3548   	; 0x18d6 <__divmodhi4>
+     afa:	80 17       	cp	r24, r16
+     afc:	91 07       	cpc	r25, r17
+     afe:	0c f4       	brge	.+2      	; 0xb02 <main+0x38a>
+     b00:	94 c2       	rjmp	.+1320   	; 0x102a <main+0x8b2>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     b02:	10 92 a5 00 	sts	0x00A5, r1
+     b06:	10 92 a4 00 	sts	0x00A4, r1
+      		 }
+		DDRB = 0;
+     b0a:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     b0c:	20 91 65 00 	lds	r18, 0x0065
+     b10:	80 91 a4 00 	lds	r24, 0x00A4
+     b14:	90 91 a5 00 	lds	r25, 0x00A5
+     b18:	40 91 71 00 	lds	r20, 0x0071
+     b1c:	80 95       	com	r24
+     b1e:	90 95       	com	r25
+     b20:	02 c0       	rjmp	.+4      	; 0xb26 <main+0x3ae>
+     b22:	88 0f       	add	r24, r24
+     b24:	99 1f       	adc	r25, r25
+     b26:	4a 95       	dec	r20
+     b28:	e2 f7       	brpl	.-8      	; 0xb22 <main+0x3aa>
+     b2a:	ae 01       	movw	r20, r28
+     b2c:	02 c0       	rjmp	.+4      	; 0xb32 <main+0x3ba>
+     b2e:	44 0f       	add	r20, r20
+     b30:	55 1f       	adc	r21, r21
+     b32:	2a 95       	dec	r18
+     b34:	e2 f7       	brpl	.-8      	; 0xb2e <main+0x3b6>
+     b36:	84 2b       	or	r24, r20
+     b38:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     b3a:	20 91 65 00 	lds	r18, 0x0065
+     b3e:	80 91 71 00 	lds	r24, 0x0071
+     b42:	ae 01       	movw	r20, r28
+     b44:	02 c0       	rjmp	.+4      	; 0xb4a <main+0x3d2>
+     b46:	44 0f       	add	r20, r20
+     b48:	55 1f       	adc	r21, r21
+     b4a:	8a 95       	dec	r24
+     b4c:	e2 f7       	brpl	.-8      	; 0xb46 <main+0x3ce>
+     b4e:	ca 01       	movw	r24, r20
+     b50:	ae 01       	movw	r20, r28
+     b52:	02 c0       	rjmp	.+4      	; 0xb58 <main+0x3e0>
+     b54:	44 0f       	add	r20, r20
+     b56:	55 1f       	adc	r21, r21
+     b58:	2a 95       	dec	r18
+     b5a:	e2 f7       	brpl	.-8      	; 0xb54 <main+0x3dc>
+     b5c:	84 2b       	or	r24, r20
+     b5e:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     b60:	80 91 8e 00 	lds	r24, 0x008E
+     b64:	90 91 8f 00 	lds	r25, 0x008F
+     b68:	01 97       	sbiw	r24, 0x01	; 1
+     b6a:	09 f4       	brne	.+2      	; 0xb6e <main+0x3f6>
+     b6c:	bf c2       	rjmp	.+1406   	; 0x10ec <main+0x974>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     b6e:	80 91 be 00 	lds	r24, 0x00BE
+     b72:	90 91 bf 00 	lds	r25, 0x00BF
+     b76:	18 16       	cp	r1, r24
+     b78:	19 06       	cpc	r1, r25
+     b7a:	4c f4       	brge	.+18     	; 0xb8e <main+0x416>
+     b7c:	80 91 be 00 	lds	r24, 0x00BE
+     b80:	90 91 bf 00 	lds	r25, 0x00BF
+     b84:	0a 97       	sbiw	r24, 0x0a	; 10
+     b86:	90 93 bf 00 	sts	0x00BF, r25
+     b8a:	80 93 be 00 	sts	0x00BE, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     b8e:	00 91 be 00 	lds	r16, 0x00BE
+     b92:	10 91 bf 00 	lds	r17, 0x00BF
+     b96:	90 d6       	rcall	.+3360   	; 0x18b8 <rand>
+     b98:	60 e0       	ldi	r22, 0x00	; 0
+     b9a:	72 e0       	ldi	r23, 0x02	; 2
+     b9c:	9c d6       	rcall	.+3384   	; 0x18d6 <__divmodhi4>
+     b9e:	80 17       	cp	r24, r16
+     ba0:	91 07       	cpc	r25, r17
+     ba2:	0c f4       	brge	.+2      	; 0xba6 <main+0x42e>
+     ba4:	3d c2       	rjmp	.+1146   	; 0x1020 <main+0x8a8>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     ba6:	10 92 a7 00 	sts	0x00A7, r1
+     baa:	10 92 a6 00 	sts	0x00A6, r1
+      		 }
+		DDRB = 0;
+     bae:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     bb0:	20 91 66 00 	lds	r18, 0x0066
+     bb4:	80 91 a6 00 	lds	r24, 0x00A6
+     bb8:	90 91 a7 00 	lds	r25, 0x00A7
+     bbc:	40 91 72 00 	lds	r20, 0x0072
+     bc0:	80 95       	com	r24
+     bc2:	90 95       	com	r25
+     bc4:	02 c0       	rjmp	.+4      	; 0xbca <main+0x452>
+     bc6:	88 0f       	add	r24, r24
+     bc8:	99 1f       	adc	r25, r25
+     bca:	4a 95       	dec	r20
+     bcc:	e2 f7       	brpl	.-8      	; 0xbc6 <main+0x44e>
+     bce:	ae 01       	movw	r20, r28
+     bd0:	02 c0       	rjmp	.+4      	; 0xbd6 <main+0x45e>
+     bd2:	44 0f       	add	r20, r20
+     bd4:	55 1f       	adc	r21, r21
+     bd6:	2a 95       	dec	r18
+     bd8:	e2 f7       	brpl	.-8      	; 0xbd2 <main+0x45a>
+     bda:	84 2b       	or	r24, r20
+     bdc:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     bde:	20 91 66 00 	lds	r18, 0x0066
+     be2:	80 91 72 00 	lds	r24, 0x0072
+     be6:	ae 01       	movw	r20, r28
+     be8:	02 c0       	rjmp	.+4      	; 0xbee <main+0x476>
+     bea:	44 0f       	add	r20, r20
+     bec:	55 1f       	adc	r21, r21
+     bee:	8a 95       	dec	r24
+     bf0:	e2 f7       	brpl	.-8      	; 0xbea <main+0x472>
+     bf2:	ca 01       	movw	r24, r20
+     bf4:	ae 01       	movw	r20, r28
+     bf6:	02 c0       	rjmp	.+4      	; 0xbfc <main+0x484>
+     bf8:	44 0f       	add	r20, r20
+     bfa:	55 1f       	adc	r21, r21
+     bfc:	2a 95       	dec	r18
+     bfe:	e2 f7       	brpl	.-8      	; 0xbf8 <main+0x480>
+     c00:	84 2b       	or	r24, r20
+     c02:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     c04:	80 91 90 00 	lds	r24, 0x0090
+     c08:	90 91 91 00 	lds	r25, 0x0091
+     c0c:	01 97       	sbiw	r24, 0x01	; 1
+     c0e:	09 f4       	brne	.+2      	; 0xc12 <main+0x49a>
+     c10:	a3 c2       	rjmp	.+1350   	; 0x1158 <main+0x9e0>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     c12:	80 91 c0 00 	lds	r24, 0x00C0
+     c16:	90 91 c1 00 	lds	r25, 0x00C1
+     c1a:	18 16       	cp	r1, r24
+     c1c:	19 06       	cpc	r1, r25
+     c1e:	4c f4       	brge	.+18     	; 0xc32 <main+0x4ba>
+     c20:	80 91 c0 00 	lds	r24, 0x00C0
+     c24:	90 91 c1 00 	lds	r25, 0x00C1
+     c28:	0a 97       	sbiw	r24, 0x0a	; 10
+     c2a:	90 93 c1 00 	sts	0x00C1, r25
+     c2e:	80 93 c0 00 	sts	0x00C0, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     c32:	00 91 c0 00 	lds	r16, 0x00C0
+     c36:	10 91 c1 00 	lds	r17, 0x00C1
+     c3a:	3e d6       	rcall	.+3196   	; 0x18b8 <rand>
+     c3c:	60 e0       	ldi	r22, 0x00	; 0
+     c3e:	72 e0       	ldi	r23, 0x02	; 2
+     c40:	4a d6       	rcall	.+3220   	; 0x18d6 <__divmodhi4>
+     c42:	80 17       	cp	r24, r16
+     c44:	91 07       	cpc	r25, r17
+     c46:	0c f4       	brge	.+2      	; 0xc4a <main+0x4d2>
+     c48:	e6 c1       	rjmp	.+972    	; 0x1016 <main+0x89e>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     c4a:	10 92 a9 00 	sts	0x00A9, r1
+     c4e:	10 92 a8 00 	sts	0x00A8, r1
+      		 }
+		DDRB = 0;
+     c52:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     c54:	20 91 67 00 	lds	r18, 0x0067
+     c58:	80 91 a8 00 	lds	r24, 0x00A8
+     c5c:	90 91 a9 00 	lds	r25, 0x00A9
+     c60:	40 91 73 00 	lds	r20, 0x0073
+     c64:	80 95       	com	r24
+     c66:	90 95       	com	r25
+     c68:	02 c0       	rjmp	.+4      	; 0xc6e <main+0x4f6>
+     c6a:	88 0f       	add	r24, r24
+     c6c:	99 1f       	adc	r25, r25
+     c6e:	4a 95       	dec	r20
+     c70:	e2 f7       	brpl	.-8      	; 0xc6a <main+0x4f2>
+     c72:	ae 01       	movw	r20, r28
+     c74:	02 c0       	rjmp	.+4      	; 0xc7a <main+0x502>
+     c76:	44 0f       	add	r20, r20
+     c78:	55 1f       	adc	r21, r21
+     c7a:	2a 95       	dec	r18
+     c7c:	e2 f7       	brpl	.-8      	; 0xc76 <main+0x4fe>
+     c7e:	84 2b       	or	r24, r20
+     c80:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     c82:	20 91 67 00 	lds	r18, 0x0067
+     c86:	80 91 73 00 	lds	r24, 0x0073
+     c8a:	ae 01       	movw	r20, r28
+     c8c:	02 c0       	rjmp	.+4      	; 0xc92 <main+0x51a>
+     c8e:	44 0f       	add	r20, r20
+     c90:	55 1f       	adc	r21, r21
+     c92:	8a 95       	dec	r24
+     c94:	e2 f7       	brpl	.-8      	; 0xc8e <main+0x516>
+     c96:	ca 01       	movw	r24, r20
+     c98:	ae 01       	movw	r20, r28
+     c9a:	02 c0       	rjmp	.+4      	; 0xca0 <main+0x528>
+     c9c:	44 0f       	add	r20, r20
+     c9e:	55 1f       	adc	r21, r21
+     ca0:	2a 95       	dec	r18
+     ca2:	e2 f7       	brpl	.-8      	; 0xc9c <main+0x524>
+     ca4:	84 2b       	or	r24, r20
+     ca6:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     ca8:	80 91 92 00 	lds	r24, 0x0092
+     cac:	90 91 93 00 	lds	r25, 0x0093
+     cb0:	01 97       	sbiw	r24, 0x01	; 1
+     cb2:	09 f4       	brne	.+2      	; 0xcb6 <main+0x53e>
+     cb4:	3f c2       	rjmp	.+1150   	; 0x1134 <main+0x9bc>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     cb6:	80 91 c2 00 	lds	r24, 0x00C2
+     cba:	90 91 c3 00 	lds	r25, 0x00C3
+     cbe:	18 16       	cp	r1, r24
+     cc0:	19 06       	cpc	r1, r25
+     cc2:	4c f4       	brge	.+18     	; 0xcd6 <main+0x55e>
+     cc4:	80 91 c2 00 	lds	r24, 0x00C2
+     cc8:	90 91 c3 00 	lds	r25, 0x00C3
+     ccc:	0a 97       	sbiw	r24, 0x0a	; 10
+     cce:	90 93 c3 00 	sts	0x00C3, r25
+     cd2:	80 93 c2 00 	sts	0x00C2, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     cd6:	00 91 c2 00 	lds	r16, 0x00C2
+     cda:	10 91 c3 00 	lds	r17, 0x00C3
+     cde:	ec d5       	rcall	.+3032   	; 0x18b8 <rand>
+     ce0:	60 e0       	ldi	r22, 0x00	; 0
+     ce2:	72 e0       	ldi	r23, 0x02	; 2
+     ce4:	f8 d5       	rcall	.+3056   	; 0x18d6 <__divmodhi4>
+     ce6:	80 17       	cp	r24, r16
+     ce8:	91 07       	cpc	r25, r17
+     cea:	0c f4       	brge	.+2      	; 0xcee <main+0x576>
+     cec:	8f c1       	rjmp	.+798    	; 0x100c <main+0x894>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     cee:	10 92 ab 00 	sts	0x00AB, r1
+     cf2:	10 92 aa 00 	sts	0x00AA, r1
+      		 }
+		DDRB = 0;
+     cf6:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     cf8:	20 91 68 00 	lds	r18, 0x0068
+     cfc:	80 91 aa 00 	lds	r24, 0x00AA
+     d00:	90 91 ab 00 	lds	r25, 0x00AB
+     d04:	40 91 74 00 	lds	r20, 0x0074
+     d08:	80 95       	com	r24
+     d0a:	90 95       	com	r25
+     d0c:	02 c0       	rjmp	.+4      	; 0xd12 <main+0x59a>
+     d0e:	88 0f       	add	r24, r24
+     d10:	99 1f       	adc	r25, r25
+     d12:	4a 95       	dec	r20
+     d14:	e2 f7       	brpl	.-8      	; 0xd0e <main+0x596>
+     d16:	ae 01       	movw	r20, r28
+     d18:	02 c0       	rjmp	.+4      	; 0xd1e <main+0x5a6>
+     d1a:	44 0f       	add	r20, r20
+     d1c:	55 1f       	adc	r21, r21
+     d1e:	2a 95       	dec	r18
+     d20:	e2 f7       	brpl	.-8      	; 0xd1a <main+0x5a2>
+     d22:	84 2b       	or	r24, r20
+     d24:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     d26:	20 91 68 00 	lds	r18, 0x0068
+     d2a:	80 91 74 00 	lds	r24, 0x0074
+     d2e:	ae 01       	movw	r20, r28
+     d30:	02 c0       	rjmp	.+4      	; 0xd36 <main+0x5be>
+     d32:	44 0f       	add	r20, r20
+     d34:	55 1f       	adc	r21, r21
+     d36:	8a 95       	dec	r24
+     d38:	e2 f7       	brpl	.-8      	; 0xd32 <main+0x5ba>
+     d3a:	ca 01       	movw	r24, r20
+     d3c:	ae 01       	movw	r20, r28
+     d3e:	02 c0       	rjmp	.+4      	; 0xd44 <main+0x5cc>
+     d40:	44 0f       	add	r20, r20
+     d42:	55 1f       	adc	r21, r21
+     d44:	2a 95       	dec	r18
+     d46:	e2 f7       	brpl	.-8      	; 0xd40 <main+0x5c8>
+     d48:	84 2b       	or	r24, r20
+     d4a:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     d4c:	80 91 94 00 	lds	r24, 0x0094
+     d50:	90 91 95 00 	lds	r25, 0x0095
+     d54:	01 97       	sbiw	r24, 0x01	; 1
+     d56:	09 f4       	brne	.+2      	; 0xd5a <main+0x5e2>
+     d58:	23 c2       	rjmp	.+1094   	; 0x11a0 <main+0xa28>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     d5a:	80 91 c4 00 	lds	r24, 0x00C4
+     d5e:	90 91 c5 00 	lds	r25, 0x00C5
+     d62:	18 16       	cp	r1, r24
+     d64:	19 06       	cpc	r1, r25
+     d66:	4c f4       	brge	.+18     	; 0xd7a <main+0x602>
+     d68:	80 91 c4 00 	lds	r24, 0x00C4
+     d6c:	90 91 c5 00 	lds	r25, 0x00C5
+     d70:	0a 97       	sbiw	r24, 0x0a	; 10
+     d72:	90 93 c5 00 	sts	0x00C5, r25
+     d76:	80 93 c4 00 	sts	0x00C4, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     d7a:	00 91 c4 00 	lds	r16, 0x00C4
+     d7e:	10 91 c5 00 	lds	r17, 0x00C5
+     d82:	9a d5       	rcall	.+2868   	; 0x18b8 <rand>
+     d84:	60 e0       	ldi	r22, 0x00	; 0
+     d86:	72 e0       	ldi	r23, 0x02	; 2
+     d88:	a6 d5       	rcall	.+2892   	; 0x18d6 <__divmodhi4>
+     d8a:	80 17       	cp	r24, r16
+     d8c:	91 07       	cpc	r25, r17
+     d8e:	0c f4       	brge	.+2      	; 0xd92 <main+0x61a>
+     d90:	38 c1       	rjmp	.+624    	; 0x1002 <main+0x88a>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     d92:	10 92 ad 00 	sts	0x00AD, r1
+     d96:	10 92 ac 00 	sts	0x00AC, r1
+      		 }
+		DDRB = 0;
+     d9a:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     d9c:	20 91 69 00 	lds	r18, 0x0069
+     da0:	80 91 ac 00 	lds	r24, 0x00AC
+     da4:	90 91 ad 00 	lds	r25, 0x00AD
+     da8:	40 91 75 00 	lds	r20, 0x0075
+     dac:	80 95       	com	r24
+     dae:	90 95       	com	r25
+     db0:	02 c0       	rjmp	.+4      	; 0xdb6 <main+0x63e>
+     db2:	88 0f       	add	r24, r24
+     db4:	99 1f       	adc	r25, r25
+     db6:	4a 95       	dec	r20
+     db8:	e2 f7       	brpl	.-8      	; 0xdb2 <main+0x63a>
+     dba:	ae 01       	movw	r20, r28
+     dbc:	02 c0       	rjmp	.+4      	; 0xdc2 <main+0x64a>
+     dbe:	44 0f       	add	r20, r20
+     dc0:	55 1f       	adc	r21, r21
+     dc2:	2a 95       	dec	r18
+     dc4:	e2 f7       	brpl	.-8      	; 0xdbe <main+0x646>
+     dc6:	84 2b       	or	r24, r20
+     dc8:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     dca:	20 91 69 00 	lds	r18, 0x0069
+     dce:	80 91 75 00 	lds	r24, 0x0075
+     dd2:	ae 01       	movw	r20, r28
+     dd4:	02 c0       	rjmp	.+4      	; 0xdda <main+0x662>
+     dd6:	44 0f       	add	r20, r20
+     dd8:	55 1f       	adc	r21, r21
+     dda:	8a 95       	dec	r24
+     ddc:	e2 f7       	brpl	.-8      	; 0xdd6 <main+0x65e>
+     dde:	ca 01       	movw	r24, r20
+     de0:	ae 01       	movw	r20, r28
+     de2:	02 c0       	rjmp	.+4      	; 0xde8 <main+0x670>
+     de4:	44 0f       	add	r20, r20
+     de6:	55 1f       	adc	r21, r21
+     de8:	2a 95       	dec	r18
+     dea:	e2 f7       	brpl	.-8      	; 0xde4 <main+0x66c>
+     dec:	84 2b       	or	r24, r20
+     dee:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     df0:	80 91 96 00 	lds	r24, 0x0096
+     df4:	90 91 97 00 	lds	r25, 0x0097
+     df8:	01 97       	sbiw	r24, 0x01	; 1
+     dfa:	09 f4       	brne	.+2      	; 0xdfe <main+0x686>
+     dfc:	bf c1       	rjmp	.+894    	; 0x117c <main+0xa04>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     dfe:	80 91 c6 00 	lds	r24, 0x00C6
+     e02:	90 91 c7 00 	lds	r25, 0x00C7
+     e06:	18 16       	cp	r1, r24
+     e08:	19 06       	cpc	r1, r25
+     e0a:	4c f4       	brge	.+18     	; 0xe1e <main+0x6a6>
+     e0c:	80 91 c6 00 	lds	r24, 0x00C6
+     e10:	90 91 c7 00 	lds	r25, 0x00C7
+     e14:	0a 97       	sbiw	r24, 0x0a	; 10
+     e16:	90 93 c7 00 	sts	0x00C7, r25
+     e1a:	80 93 c6 00 	sts	0x00C6, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     e1e:	00 91 c6 00 	lds	r16, 0x00C6
+     e22:	10 91 c7 00 	lds	r17, 0x00C7
+     e26:	48 d5       	rcall	.+2704   	; 0x18b8 <rand>
+     e28:	60 e0       	ldi	r22, 0x00	; 0
+     e2a:	72 e0       	ldi	r23, 0x02	; 2
+     e2c:	54 d5       	rcall	.+2728   	; 0x18d6 <__divmodhi4>
+     e2e:	80 17       	cp	r24, r16
+     e30:	91 07       	cpc	r25, r17
+     e32:	0c f4       	brge	.+2      	; 0xe36 <main+0x6be>
+     e34:	e1 c0       	rjmp	.+450    	; 0xff8 <main+0x880>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     e36:	10 92 af 00 	sts	0x00AF, r1
+     e3a:	10 92 ae 00 	sts	0x00AE, r1
+      		 }
+		DDRB = 0;
+     e3e:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     e40:	20 91 6a 00 	lds	r18, 0x006A
+     e44:	80 91 ae 00 	lds	r24, 0x00AE
+     e48:	90 91 af 00 	lds	r25, 0x00AF
+     e4c:	40 91 76 00 	lds	r20, 0x0076
+     e50:	80 95       	com	r24
+     e52:	90 95       	com	r25
+     e54:	02 c0       	rjmp	.+4      	; 0xe5a <main+0x6e2>
+     e56:	88 0f       	add	r24, r24
+     e58:	99 1f       	adc	r25, r25
+     e5a:	4a 95       	dec	r20
+     e5c:	e2 f7       	brpl	.-8      	; 0xe56 <main+0x6de>
+     e5e:	ae 01       	movw	r20, r28
+     e60:	02 c0       	rjmp	.+4      	; 0xe66 <main+0x6ee>
+     e62:	44 0f       	add	r20, r20
+     e64:	55 1f       	adc	r21, r21
+     e66:	2a 95       	dec	r18
+     e68:	e2 f7       	brpl	.-8      	; 0xe62 <main+0x6ea>
+     e6a:	84 2b       	or	r24, r20
+     e6c:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     e6e:	20 91 6a 00 	lds	r18, 0x006A
+     e72:	80 91 76 00 	lds	r24, 0x0076
+     e76:	ae 01       	movw	r20, r28
+     e78:	02 c0       	rjmp	.+4      	; 0xe7e <main+0x706>
+     e7a:	44 0f       	add	r20, r20
+     e7c:	55 1f       	adc	r21, r21
+     e7e:	8a 95       	dec	r24
+     e80:	e2 f7       	brpl	.-8      	; 0xe7a <main+0x702>
+     e82:	ca 01       	movw	r24, r20
+     e84:	ae 01       	movw	r20, r28
+     e86:	02 c0       	rjmp	.+4      	; 0xe8c <main+0x714>
+     e88:	44 0f       	add	r20, r20
+     e8a:	55 1f       	adc	r21, r21
+     e8c:	2a 95       	dec	r18
+     e8e:	e2 f7       	brpl	.-8      	; 0xe88 <main+0x710>
+     e90:	84 2b       	or	r24, r20
+     e92:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     e94:	80 91 98 00 	lds	r24, 0x0098
+     e98:	90 91 99 00 	lds	r25, 0x0099
+     e9c:	01 97       	sbiw	r24, 0x01	; 1
+     e9e:	09 f4       	brne	.+2      	; 0xea2 <main+0x72a>
+     ea0:	a3 c1       	rjmp	.+838    	; 0x11e8 <main+0xa70>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     ea2:	80 91 c8 00 	lds	r24, 0x00C8
+     ea6:	90 91 c9 00 	lds	r25, 0x00C9
+     eaa:	18 16       	cp	r1, r24
+     eac:	19 06       	cpc	r1, r25
+     eae:	4c f4       	brge	.+18     	; 0xec2 <main+0x74a>
+     eb0:	80 91 c8 00 	lds	r24, 0x00C8
+     eb4:	90 91 c9 00 	lds	r25, 0x00C9
+     eb8:	0a 97       	sbiw	r24, 0x0a	; 10
+     eba:	90 93 c9 00 	sts	0x00C9, r25
+     ebe:	80 93 c8 00 	sts	0x00C8, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     ec2:	00 91 c8 00 	lds	r16, 0x00C8
+     ec6:	10 91 c9 00 	lds	r17, 0x00C9
+     eca:	f6 d4       	rcall	.+2540   	; 0x18b8 <rand>
+     ecc:	60 e0       	ldi	r22, 0x00	; 0
+     ece:	72 e0       	ldi	r23, 0x02	; 2
+     ed0:	02 d5       	rcall	.+2564   	; 0x18d6 <__divmodhi4>
+     ed2:	80 17       	cp	r24, r16
+     ed4:	91 07       	cpc	r25, r17
+     ed6:	0c f4       	brge	.+2      	; 0xeda <main+0x762>
+     ed8:	85 c0       	rjmp	.+266    	; 0xfe4 <main+0x86c>
+      		 {
+        	    currentstate[j]=1;
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     eda:	10 92 b1 00 	sts	0x00B1, r1
+     ede:	10 92 b0 00 	sts	0x00B0, r1
+      		 }
+		DDRB = 0;
+     ee2:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     ee4:	20 91 6b 00 	lds	r18, 0x006B
+     ee8:	80 91 b0 00 	lds	r24, 0x00B0
+     eec:	90 91 b1 00 	lds	r25, 0x00B1
+     ef0:	40 91 77 00 	lds	r20, 0x0077
+     ef4:	80 95       	com	r24
+     ef6:	90 95       	com	r25
+     ef8:	02 c0       	rjmp	.+4      	; 0xefe <main+0x786>
+     efa:	88 0f       	add	r24, r24
+     efc:	99 1f       	adc	r25, r25
+     efe:	4a 95       	dec	r20
+     f00:	e2 f7       	brpl	.-8      	; 0xefa <main+0x782>
+     f02:	ae 01       	movw	r20, r28
+     f04:	02 c0       	rjmp	.+4      	; 0xf0a <main+0x792>
+     f06:	44 0f       	add	r20, r20
+     f08:	55 1f       	adc	r21, r21
+     f0a:	2a 95       	dec	r18
+     f0c:	e2 f7       	brpl	.-8      	; 0xf06 <main+0x78e>
+     f0e:	84 2b       	or	r24, r20
+     f10:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     f12:	20 91 6b 00 	lds	r18, 0x006B
+     f16:	80 91 77 00 	lds	r24, 0x0077
+     f1a:	ae 01       	movw	r20, r28
+     f1c:	02 c0       	rjmp	.+4      	; 0xf22 <main+0x7aa>
+     f1e:	44 0f       	add	r20, r20
+     f20:	55 1f       	adc	r21, r21
+     f22:	8a 95       	dec	r24
+     f24:	e2 f7       	brpl	.-8      	; 0xf1e <main+0x7a6>
+     f26:	ca 01       	movw	r24, r20
+     f28:	ae 01       	movw	r20, r28
+     f2a:	02 c0       	rjmp	.+4      	; 0xf30 <main+0x7b8>
+     f2c:	44 0f       	add	r20, r20
+     f2e:	55 1f       	adc	r21, r21
+     f30:	2a 95       	dec	r18
+     f32:	e2 f7       	brpl	.-8      	; 0xf2c <main+0x7b4>
+     f34:	84 2b       	or	r24, r20
+     f36:	87 bb       	out	0x17, r24	; 23
+	{
+	check_if_sleepy();
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+     f38:	80 91 9a 00 	lds	r24, 0x009A
+     f3c:	90 91 9b 00 	lds	r25, 0x009B
+     f40:	01 97       	sbiw	r24, 0x01	; 1
+     f42:	09 f4       	brne	.+2      	; 0xf46 <main+0x7ce>
+     f44:	3f c1       	rjmp	.+638    	; 0x11c4 <main+0xa4c>
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+       		 }
+     	       else //wantedstate=0
+       		 { 
+    		   if (brightness[j] > 0) brightness[j]-=10;
+     f46:	80 91 ca 00 	lds	r24, 0x00CA
+     f4a:	90 91 cb 00 	lds	r25, 0x00CB
+     f4e:	18 16       	cp	r1, r24
+     f50:	19 06       	cpc	r1, r25
+     f52:	4c f4       	brge	.+18     	; 0xf66 <main+0x7ee>
+     f54:	80 91 ca 00 	lds	r24, 0x00CA
+     f58:	90 91 cb 00 	lds	r25, 0x00CB
+     f5c:	0a 97       	sbiw	r24, 0x0a	; 10
+     f5e:	90 93 cb 00 	sts	0x00CB, r25
+     f62:	80 93 ca 00 	sts	0x00CA, r24
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+     f66:	00 91 ca 00 	lds	r16, 0x00CA
+     f6a:	10 91 cb 00 	lds	r17, 0x00CB
+     f6e:	a4 d4       	rcall	.+2376   	; 0x18b8 <rand>
+     f70:	60 e0       	ldi	r22, 0x00	; 0
+     f72:	72 e0       	ldi	r23, 0x02	; 2
+     f74:	b0 d4       	rcall	.+2400   	; 0x18d6 <__divmodhi4>
+     f76:	80 17       	cp	r24, r16
+     f78:	91 07       	cpc	r25, r17
+     f7a:	cc f5       	brge	.+114    	; 0xfee <main+0x876>
+      		 {
+        	    currentstate[j]=1;
+     f7c:	d0 93 b3 00 	sts	0x00B3, r29
+     f80:	c0 93 b2 00 	sts	0x00B2, r28
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+      		 }
+		DDRB = 0;
+     f84:	17 ba       	out	0x17, r1	; 23
+		PORTB = 1<<anode[j]|~currentstate[j]<<cathode[j];
+     f86:	20 91 6c 00 	lds	r18, 0x006C
+     f8a:	80 91 b2 00 	lds	r24, 0x00B2
+     f8e:	90 91 b3 00 	lds	r25, 0x00B3
+     f92:	40 91 78 00 	lds	r20, 0x0078
+     f96:	80 95       	com	r24
+     f98:	90 95       	com	r25
+     f9a:	02 c0       	rjmp	.+4      	; 0xfa0 <main+0x828>
+     f9c:	88 0f       	add	r24, r24
+     f9e:	99 1f       	adc	r25, r25
+     fa0:	4a 95       	dec	r20
+     fa2:	e2 f7       	brpl	.-8      	; 0xf9c <main+0x824>
+     fa4:	ae 01       	movw	r20, r28
+     fa6:	02 c0       	rjmp	.+4      	; 0xfac <main+0x834>
+     fa8:	44 0f       	add	r20, r20
+     faa:	55 1f       	adc	r21, r21
+     fac:	2a 95       	dec	r18
+     fae:	e2 f7       	brpl	.-8      	; 0xfa8 <main+0x830>
+     fb0:	84 2b       	or	r24, r20
+     fb2:	88 bb       	out	0x18, r24	; 24
+		DDRB = 1<<anode[j]|1<<cathode[j];
+     fb4:	20 91 6c 00 	lds	r18, 0x006C
+     fb8:	80 91 78 00 	lds	r24, 0x0078
+     fbc:	ae 01       	movw	r20, r28
+     fbe:	02 c0       	rjmp	.+4      	; 0xfc4 <main+0x84c>
+     fc0:	44 0f       	add	r20, r20
+     fc2:	55 1f       	adc	r21, r21
+     fc4:	8a 95       	dec	r24
+     fc6:	e2 f7       	brpl	.-8      	; 0xfc0 <main+0x848>
+     fc8:	ca 01       	movw	r24, r20
+     fca:	ae 01       	movw	r20, r28
+     fcc:	02 c0       	rjmp	.+4      	; 0xfd2 <main+0x85a>
+     fce:	44 0f       	add	r20, r20
+     fd0:	55 1f       	adc	r21, r21
+     fd2:	2a 95       	dec	r18
+     fd4:	e2 f7       	brpl	.-8      	; 0xfce <main+0x856>
+     fd6:	84 2b       	or	r24, r20
+     fd8:	87 bb       	out	0x17, r24	; 23
+        	}
+	
+	 wdt_reset();
+     fda:	a8 95       	wdr
+     fdc:	41 e0       	ldi	r20, 0x01	; 1
+     fde:	20 e0       	ldi	r18, 0x00	; 0
+     fe0:	30 e0       	ldi	r19, 0x00	; 0
+     fe2:	f7 cb       	rjmp	.-2066   	; 0x7d2 <main+0x5a>
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+      		 {
+        	    currentstate[j]=1;
+     fe4:	d0 93 b1 00 	sts	0x00B1, r29
+     fe8:	c0 93 b0 00 	sts	0x00B0, r28
+     fec:	7a cf       	rjmp	.-268    	; 0xee2 <main+0x76a>
+     		  }
+      		     else
+      		 {
+   	         currentstate[j]=0;
+     fee:	10 92 b3 00 	sts	0x00B3, r1
+     ff2:	10 92 b2 00 	sts	0x00B2, r1
+     ff6:	c6 cf       	rjmp	.-116    	; 0xf84 <main+0x80c>
+                }
+       
+       
+     	      if (brightness[j] > (rand() % 512))
+      		 {
+        	    currentstate[j]=1;
+     ff8:	d0 93 af 00 	sts	0x00AF, r29
+     ffc:	c0 93 ae 00 	sts	0x00AE, r28
+    1000:	1e cf       	rjmp	.-452    	; 0xe3e <main+0x6c6>
+    1002:	d0 93 ad 00 	sts	0x00AD, r29
+    1006:	c0 93 ac 00 	sts	0x00AC, r28
+    100a:	c7 ce       	rjmp	.-626    	; 0xd9a <main+0x622>
+    100c:	d0 93 ab 00 	sts	0x00AB, r29
+    1010:	c0 93 aa 00 	sts	0x00AA, r28
+    1014:	70 ce       	rjmp	.-800    	; 0xcf6 <main+0x57e>
+    1016:	d0 93 a9 00 	sts	0x00A9, r29
+    101a:	c0 93 a8 00 	sts	0x00A8, r28
+    101e:	19 ce       	rjmp	.-974    	; 0xc52 <main+0x4da>
+    1020:	d0 93 a7 00 	sts	0x00A7, r29
+    1024:	c0 93 a6 00 	sts	0x00A6, r28
+    1028:	c2 cd       	rjmp	.-1148   	; 0xbae <main+0x436>
+    102a:	d0 93 a5 00 	sts	0x00A5, r29
+    102e:	c0 93 a4 00 	sts	0x00A4, r28
+    1032:	6b cd       	rjmp	.-1322   	; 0xb0a <main+0x392>
+    1034:	d0 93 a3 00 	sts	0x00A3, r29
+    1038:	c0 93 a2 00 	sts	0x00A2, r28
+    103c:	14 cd       	rjmp	.-1496   	; 0xa66 <main+0x2ee>
+    103e:	d0 93 a1 00 	sts	0x00A1, r29
+    1042:	c0 93 a0 00 	sts	0x00A0, r28
+    1046:	bd cc       	rjmp	.-1670   	; 0x9c2 <main+0x24a>
+    1048:	d0 93 9f 00 	sts	0x009F, r29
+    104c:	c0 93 9e 00 	sts	0x009E, r28
+    1050:	66 cc       	rjmp	.-1844   	; 0x91e <main+0x1a6>
+    1052:	d0 93 9d 00 	sts	0x009D, r29
+    1056:	c0 93 9c 00 	sts	0x009C, r28
+    105a:	0f cc       	rjmp	.-2018   	; 0x87a <main+0x102>
+	for(int j = 0; j < NumberOfFlys; j++)
+	      {
+
+	        if (flystatus[j] == 1)
+       		 {
+        	   if (brightness[j] < 500) brightness[j]+=10;
+    105c:	80 91 b6 00 	lds	r24, 0x00B6
+    1060:	90 91 b7 00 	lds	r25, 0x00B7
+    1064:	84 5f       	subi	r24, 0xF4	; 244
+    1066:	91 40       	sbci	r25, 0x01	; 1
+    1068:	0c f0       	brlt	.+2      	; 0x106c <main+0x8f4>
+    106a:	49 cc       	rjmp	.-1902   	; 0x8fe <main+0x186>
+    106c:	80 91 b6 00 	lds	r24, 0x00B6
+    1070:	90 91 b7 00 	lds	r25, 0x00B7
+    1074:	0a 96       	adiw	r24, 0x0a	; 10
+    1076:	90 93 b7 00 	sts	0x00B7, r25
+    107a:	80 93 b6 00 	sts	0x00B6, r24
+    107e:	3f cc       	rjmp	.-1922   	; 0x8fe <main+0x186>
+    1080:	80 91 b4 00 	lds	r24, 0x00B4
+    1084:	90 91 b5 00 	lds	r25, 0x00B5
+    1088:	84 5f       	subi	r24, 0xF4	; 244
+    108a:	91 40       	sbci	r25, 0x01	; 1
+    108c:	0c f0       	brlt	.+2      	; 0x1090 <main+0x918>
+    108e:	e5 cb       	rjmp	.-2102   	; 0x85a <main+0xe2>
+    1090:	80 91 b4 00 	lds	r24, 0x00B4
+    1094:	90 91 b5 00 	lds	r25, 0x00B5
+    1098:	0a 96       	adiw	r24, 0x0a	; 10
+    109a:	90 93 b5 00 	sts	0x00B5, r25
+    109e:	80 93 b4 00 	sts	0x00B4, r24
+    10a2:	db cb       	rjmp	.-2122   	; 0x85a <main+0xe2>
+    10a4:	80 91 ba 00 	lds	r24, 0x00BA
+    10a8:	90 91 bb 00 	lds	r25, 0x00BB
+    10ac:	84 5f       	subi	r24, 0xF4	; 244
+    10ae:	91 40       	sbci	r25, 0x01	; 1
+    10b0:	0c f0       	brlt	.+2      	; 0x10b4 <main+0x93c>
+    10b2:	c9 cc       	rjmp	.-1646   	; 0xa46 <main+0x2ce>
+    10b4:	80 91 ba 00 	lds	r24, 0x00BA
+    10b8:	90 91 bb 00 	lds	r25, 0x00BB
+    10bc:	0a 96       	adiw	r24, 0x0a	; 10
+    10be:	90 93 bb 00 	sts	0x00BB, r25
+    10c2:	80 93 ba 00 	sts	0x00BA, r24
+    10c6:	bf cc       	rjmp	.-1666   	; 0xa46 <main+0x2ce>
+    10c8:	80 91 b8 00 	lds	r24, 0x00B8
+    10cc:	90 91 b9 00 	lds	r25, 0x00B9
+    10d0:	84 5f       	subi	r24, 0xF4	; 244
+    10d2:	91 40       	sbci	r25, 0x01	; 1
+    10d4:	0c f0       	brlt	.+2      	; 0x10d8 <main+0x960>
+    10d6:	65 cc       	rjmp	.-1846   	; 0x9a2 <main+0x22a>
+    10d8:	80 91 b8 00 	lds	r24, 0x00B8
+    10dc:	90 91 b9 00 	lds	r25, 0x00B9
+    10e0:	0a 96       	adiw	r24, 0x0a	; 10
+    10e2:	90 93 b9 00 	sts	0x00B9, r25
+    10e6:	80 93 b8 00 	sts	0x00B8, r24
+    10ea:	5b cc       	rjmp	.-1866   	; 0x9a2 <main+0x22a>
+    10ec:	80 91 be 00 	lds	r24, 0x00BE
+    10f0:	90 91 bf 00 	lds	r25, 0x00BF
+    10f4:	84 5f       	subi	r24, 0xF4	; 244
+    10f6:	91 40       	sbci	r25, 0x01	; 1
+    10f8:	0c f0       	brlt	.+2      	; 0x10fc <main+0x984>
+    10fa:	49 cd       	rjmp	.-1390   	; 0xb8e <main+0x416>
+    10fc:	80 91 be 00 	lds	r24, 0x00BE
+    1100:	90 91 bf 00 	lds	r25, 0x00BF
+    1104:	0a 96       	adiw	r24, 0x0a	; 10
+    1106:	90 93 bf 00 	sts	0x00BF, r25
+    110a:	80 93 be 00 	sts	0x00BE, r24
+    110e:	3f cd       	rjmp	.-1410   	; 0xb8e <main+0x416>
+    1110:	80 91 bc 00 	lds	r24, 0x00BC
+    1114:	90 91 bd 00 	lds	r25, 0x00BD
+    1118:	84 5f       	subi	r24, 0xF4	; 244
+    111a:	91 40       	sbci	r25, 0x01	; 1
+    111c:	0c f0       	brlt	.+2      	; 0x1120 <main+0x9a8>
+    111e:	e5 cc       	rjmp	.-1590   	; 0xaea <main+0x372>
+    1120:	80 91 bc 00 	lds	r24, 0x00BC
+    1124:	90 91 bd 00 	lds	r25, 0x00BD
+    1128:	0a 96       	adiw	r24, 0x0a	; 10
+    112a:	90 93 bd 00 	sts	0x00BD, r25
+    112e:	80 93 bc 00 	sts	0x00BC, r24
+    1132:	db cc       	rjmp	.-1610   	; 0xaea <main+0x372>
+    1134:	80 91 c2 00 	lds	r24, 0x00C2
+    1138:	90 91 c3 00 	lds	r25, 0x00C3
+    113c:	84 5f       	subi	r24, 0xF4	; 244
+    113e:	91 40       	sbci	r25, 0x01	; 1
+    1140:	0c f0       	brlt	.+2      	; 0x1144 <main+0x9cc>
+    1142:	c9 cd       	rjmp	.-1134   	; 0xcd6 <main+0x55e>
+    1144:	80 91 c2 00 	lds	r24, 0x00C2
+    1148:	90 91 c3 00 	lds	r25, 0x00C3
+    114c:	0a 96       	adiw	r24, 0x0a	; 10
+    114e:	90 93 c3 00 	sts	0x00C3, r25
+    1152:	80 93 c2 00 	sts	0x00C2, r24
+    1156:	bf cd       	rjmp	.-1154   	; 0xcd6 <main+0x55e>
+    1158:	80 91 c0 00 	lds	r24, 0x00C0
+    115c:	90 91 c1 00 	lds	r25, 0x00C1
+    1160:	84 5f       	subi	r24, 0xF4	; 244
+    1162:	91 40       	sbci	r25, 0x01	; 1
+    1164:	0c f0       	brlt	.+2      	; 0x1168 <main+0x9f0>
+    1166:	65 cd       	rjmp	.-1334   	; 0xc32 <main+0x4ba>
+    1168:	80 91 c0 00 	lds	r24, 0x00C0
+    116c:	90 91 c1 00 	lds	r25, 0x00C1
+    1170:	0a 96       	adiw	r24, 0x0a	; 10
+    1172:	90 93 c1 00 	sts	0x00C1, r25
+    1176:	80 93 c0 00 	sts	0x00C0, r24
+    117a:	5b cd       	rjmp	.-1354   	; 0xc32 <main+0x4ba>
+    117c:	80 91 c6 00 	lds	r24, 0x00C6
+    1180:	90 91 c7 00 	lds	r25, 0x00C7
+    1184:	84 5f       	subi	r24, 0xF4	; 244
+    1186:	91 40       	sbci	r25, 0x01	; 1
+    1188:	0c f0       	brlt	.+2      	; 0x118c <main+0xa14>
+    118a:	49 ce       	rjmp	.-878    	; 0xe1e <main+0x6a6>
+    118c:	80 91 c6 00 	lds	r24, 0x00C6
+    1190:	90 91 c7 00 	lds	r25, 0x00C7
+    1194:	0a 96       	adiw	r24, 0x0a	; 10
+    1196:	90 93 c7 00 	sts	0x00C7, r25
+    119a:	80 93 c6 00 	sts	0x00C6, r24
+    119e:	3f ce       	rjmp	.-898    	; 0xe1e <main+0x6a6>
+    11a0:	80 91 c4 00 	lds	r24, 0x00C4
+    11a4:	90 91 c5 00 	lds	r25, 0x00C5
+    11a8:	84 5f       	subi	r24, 0xF4	; 244
+    11aa:	91 40       	sbci	r25, 0x01	; 1
+    11ac:	0c f0       	brlt	.+2      	; 0x11b0 <main+0xa38>
+    11ae:	e5 cd       	rjmp	.-1078   	; 0xd7a <main+0x602>
+    11b0:	80 91 c4 00 	lds	r24, 0x00C4
+    11b4:	90 91 c5 00 	lds	r25, 0x00C5
+    11b8:	0a 96       	adiw	r24, 0x0a	; 10
+    11ba:	90 93 c5 00 	sts	0x00C5, r25
+    11be:	80 93 c4 00 	sts	0x00C4, r24
+    11c2:	db cd       	rjmp	.-1098   	; 0xd7a <main+0x602>
+    11c4:	80 91 ca 00 	lds	r24, 0x00CA
+    11c8:	90 91 cb 00 	lds	r25, 0x00CB
+    11cc:	84 5f       	subi	r24, 0xF4	; 244
+    11ce:	91 40       	sbci	r25, 0x01	; 1
+    11d0:	0c f0       	brlt	.+2      	; 0x11d4 <main+0xa5c>
+    11d2:	c9 ce       	rjmp	.-622    	; 0xf66 <main+0x7ee>
+    11d4:	80 91 ca 00 	lds	r24, 0x00CA
+    11d8:	90 91 cb 00 	lds	r25, 0x00CB
+    11dc:	0a 96       	adiw	r24, 0x0a	; 10
+    11de:	90 93 cb 00 	sts	0x00CB, r25
+    11e2:	80 93 ca 00 	sts	0x00CA, r24
+    11e6:	bf ce       	rjmp	.-642    	; 0xf66 <main+0x7ee>
+    11e8:	80 91 c8 00 	lds	r24, 0x00C8
+    11ec:	90 91 c9 00 	lds	r25, 0x00C9
+    11f0:	84 5f       	subi	r24, 0xF4	; 244
+    11f2:	91 40       	sbci	r25, 0x01	; 1
+    11f4:	0c f0       	brlt	.+2      	; 0x11f8 <main+0xa80>
+    11f6:	65 ce       	rjmp	.-822    	; 0xec2 <main+0x74a>
+    11f8:	80 91 c8 00 	lds	r24, 0x00C8
+    11fc:	90 91 c9 00 	lds	r25, 0x00C9
+    1200:	0a 96       	adiw	r24, 0x0a	; 10
+    1202:	90 93 c9 00 	sts	0x00C9, r25
+    1206:	80 93 c8 00 	sts	0x00C8, r24
+    120a:	5b ce       	rjmp	.-842    	; 0xec2 <main+0x74a>
+
+0000120c <__vector_5>:
+}//End Main
+
+
+//Our Timer Interrupt
+ISR(TIM0_OVF_vect)
+{
+    120c:	1f 92       	push	r1
+    120e:	0f 92       	push	r0
+    1210:	0f b6       	in	r0, 0x3f	; 63
+    1212:	0f 92       	push	r0
+    1214:	11 24       	eor	r1, r1
+    1216:	0f 93       	push	r16
+    1218:	1f 93       	push	r17
+    121a:	2f 93       	push	r18
+    121c:	3f 93       	push	r19
+    121e:	4f 93       	push	r20
+    1220:	5f 93       	push	r21
+    1222:	6f 93       	push	r22
+    1224:	7f 93       	push	r23
+    1226:	8f 93       	push	r24
+    1228:	9f 93       	push	r25
+    122a:	af 93       	push	r26
+    122c:	bf 93       	push	r27
+    122e:	ef 93       	push	r30
+    1230:	ff 93       	push	r31
+	tick++;
+    1232:	80 91 d0 00 	lds	r24, 0x00D0
+    1236:	90 91 d1 00 	lds	r25, 0x00D1
+    123a:	a0 91 d2 00 	lds	r26, 0x00D2
+    123e:	b0 91 d3 00 	lds	r27, 0x00D3
+    1242:	01 96       	adiw	r24, 0x01	; 1
+    1244:	a1 1d       	adc	r26, r1
+    1246:	b1 1d       	adc	r27, r1
+    1248:	80 93 d0 00 	sts	0x00D0, r24
+    124c:	90 93 d1 00 	sts	0x00D1, r25
+    1250:	a0 93 d2 00 	sts	0x00D2, r26
+    1254:	b0 93 d3 00 	sts	0x00D3, r27
+	if (tick % 5== 0)
+    1258:	60 91 d0 00 	lds	r22, 0x00D0
+    125c:	70 91 d1 00 	lds	r23, 0x00D1
+    1260:	80 91 d2 00 	lds	r24, 0x00D2
+    1264:	90 91 d3 00 	lds	r25, 0x00D3
+    1268:	25 e0       	ldi	r18, 0x05	; 5
+    126a:	30 e0       	ldi	r19, 0x00	; 0
+    126c:	40 e0       	ldi	r20, 0x00	; 0
+    126e:	50 e0       	ldi	r21, 0x00	; 0
+    1270:	45 d3       	rcall	.+1674   	; 0x18fc <__divmodsi4>
+    1272:	61 15       	cp	r22, r1
+    1274:	71 05       	cpc	r23, r1
+    1276:	81 05       	cpc	r24, r1
+    1278:	91 05       	cpc	r25, r1
+    127a:	09 f0       	breq	.+2      	; 0x127e <__vector_5+0x72>
+    127c:	f0 c1       	rjmp	.+992    	; 0x165e <__vector_5+0x452>
+
+
+int analogRead(void)
+{
+        uint8_t low, high;
+        ADMUX = 0b00000001;
+    127e:	81 e0       	ldi	r24, 0x01	; 1
+    1280:	87 b9       	out	0x07, r24	; 7
+        sbi(ADCSRA, ADSC);
+    1282:	36 9a       	sbi	0x06, 6	; 6
+        while (bit_is_set(ADCSRA, ADSC));
+    1284:	36 99       	sbic	0x06, 6	; 6
+    1286:	fe cf       	rjmp	.-4      	; 0x1284 <__vector_5+0x78>
+        low = ADCL;
+    1288:	84 b1       	in	r24, 0x04	; 4
+        high = ADCH;
+    128a:	45 b1       	in	r20, 0x05	; 5
+ISR(TIM0_OVF_vect)
+{
+	tick++;
+	if (tick % 5== 0)
+	{
+			if ( analogRead() < 300 )
+    128c:	34 2f       	mov	r19, r20
+    128e:	20 e0       	ldi	r18, 0x00	; 0
+    1290:	90 e0       	ldi	r25, 0x00	; 0
+    1292:	28 2b       	or	r18, r24
+    1294:	39 2b       	or	r19, r25
+    1296:	2c 52       	subi	r18, 0x2C	; 44
+    1298:	31 40       	sbci	r19, 0x01	; 1
+    129a:	0c f4       	brge	.+2      	; 0x129e <__vector_5+0x92>
+    129c:	80 c2       	rjmp	.+1280   	; 0x179e <__vector_5+0x592>
+                        if (activity >= 100)
+                        activity=( 100 - rand () % 1000);
+			}
+			else
+			{
+			if (lightness_counter < 100)
+    129e:	80 91 82 00 	lds	r24, 0x0082
+    12a2:	90 91 83 00 	lds	r25, 0x0083
+    12a6:	84 36       	cpi	r24, 0x64	; 100
+    12a8:	91 05       	cpc	r25, r1
+    12aa:	2c f4       	brge	.+10     	; 0x12b6 <__vector_5+0xaa>
+			lightness_counter++;
+    12ac:	01 96       	adiw	r24, 0x01	; 1
+    12ae:	90 93 83 00 	sts	0x0083, r25
+    12b2:	80 93 82 00 	sts	0x0082, r24
+                        activity -= 100;
+    12b6:	80 91 79 00 	lds	r24, 0x0079
+    12ba:	90 91 7a 00 	lds	r25, 0x007A
+    12be:	a0 91 7b 00 	lds	r26, 0x007B
+    12c2:	b0 91 7c 00 	lds	r27, 0x007C
+    12c6:	84 56       	subi	r24, 0x64	; 100
+    12c8:	90 40       	sbci	r25, 0x00	; 0
+    12ca:	a0 40       	sbci	r26, 0x00	; 0
+    12cc:	b0 40       	sbci	r27, 0x00	; 0
+    12ce:	80 93 79 00 	sts	0x0079, r24
+    12d2:	90 93 7a 00 	sts	0x007A, r25
+    12d6:	a0 93 7b 00 	sts	0x007B, r26
+    12da:	b0 93 7c 00 	sts	0x007C, r27
+             	        if (activity > -1000)
+    12de:	80 91 79 00 	lds	r24, 0x0079
+    12e2:	90 91 7a 00 	lds	r25, 0x007A
+    12e6:	a0 91 7b 00 	lds	r26, 0x007B
+    12ea:	b0 91 7c 00 	lds	r27, 0x007C
+    12ee:	89 51       	subi	r24, 0x19	; 25
+    12f0:	9c 4f       	sbci	r25, 0xFC	; 252
+    12f2:	af 4f       	sbci	r26, 0xFF	; 255
+    12f4:	bf 4f       	sbci	r27, 0xFF	; 255
+    12f6:	0c f0       	brlt	.+2      	; 0x12fa <__vector_5+0xee>
+    12f8:	45 c2       	rjmp	.+1162   	; 0x1784 <__vector_5+0x578>
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    12fa:	de d2       	rcall	.+1468   	; 0x18b8 <rand>
+    12fc:	00 91 79 00 	lds	r16, 0x0079
+    1300:	10 91 7a 00 	lds	r17, 0x007A
+    1304:	20 91 7b 00 	lds	r18, 0x007B
+    1308:	30 91 7c 00 	lds	r19, 0x007C
+    130c:	68 ee       	ldi	r22, 0xE8	; 232
+    130e:	73 e0       	ldi	r23, 0x03	; 3
+    1310:	e2 d2       	rcall	.+1476   	; 0x18d6 <__divmodhi4>
+    1312:	ac 01       	movw	r20, r24
+    1314:	66 27       	eor	r22, r22
+    1316:	57 fd       	sbrc	r21, 7
+    1318:	60 95       	com	r22
+    131a:	76 2f       	mov	r23, r22
+    131c:	40 0f       	add	r20, r16
+    131e:	51 1f       	adc	r21, r17
+    1320:	62 1f       	adc	r22, r18
+    1322:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    1324:	40 32       	cpi	r20, 0x20	; 32
+    1326:	83 e0       	ldi	r24, 0x03	; 3
+    1328:	58 07       	cpc	r21, r24
+    132a:	80 e0       	ldi	r24, 0x00	; 0
+    132c:	68 07       	cpc	r22, r24
+    132e:	80 e0       	ldi	r24, 0x00	; 0
+    1330:	78 07       	cpc	r23, r24
+    1332:	0c f4       	brge	.+2      	; 0x1336 <__vector_5+0x12a>
+    1334:	1c c2       	rjmp	.+1080   	; 0x176e <__vector_5+0x562>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    1336:	81 e0       	ldi	r24, 0x01	; 1
+    1338:	90 e0       	ldi	r25, 0x00	; 0
+    133a:	90 93 85 00 	sts	0x0085, r25
+    133e:	80 93 84 00 	sts	0x0084, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    1342:	ba d2       	rcall	.+1396   	; 0x18b8 <rand>
+    1344:	00 91 79 00 	lds	r16, 0x0079
+    1348:	10 91 7a 00 	lds	r17, 0x007A
+    134c:	20 91 7b 00 	lds	r18, 0x007B
+    1350:	30 91 7c 00 	lds	r19, 0x007C
+    1354:	68 ee       	ldi	r22, 0xE8	; 232
+    1356:	73 e0       	ldi	r23, 0x03	; 3
+    1358:	be d2       	rcall	.+1404   	; 0x18d6 <__divmodhi4>
+    135a:	ac 01       	movw	r20, r24
+    135c:	66 27       	eor	r22, r22
+    135e:	57 fd       	sbrc	r21, 7
+    1360:	60 95       	com	r22
+    1362:	76 2f       	mov	r23, r22
+    1364:	40 0f       	add	r20, r16
+    1366:	51 1f       	adc	r21, r17
+    1368:	62 1f       	adc	r22, r18
+    136a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    136c:	40 32       	cpi	r20, 0x20	; 32
+    136e:	83 e0       	ldi	r24, 0x03	; 3
+    1370:	58 07       	cpc	r21, r24
+    1372:	80 e0       	ldi	r24, 0x00	; 0
+    1374:	68 07       	cpc	r22, r24
+    1376:	80 e0       	ldi	r24, 0x00	; 0
+    1378:	78 07       	cpc	r23, r24
+    137a:	0c f4       	brge	.+2      	; 0x137e <__vector_5+0x172>
+    137c:	ed c1       	rjmp	.+986    	; 0x1758 <__vector_5+0x54c>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    137e:	81 e0       	ldi	r24, 0x01	; 1
+    1380:	90 e0       	ldi	r25, 0x00	; 0
+    1382:	90 93 87 00 	sts	0x0087, r25
+    1386:	80 93 86 00 	sts	0x0086, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    138a:	96 d2       	rcall	.+1324   	; 0x18b8 <rand>
+    138c:	00 91 79 00 	lds	r16, 0x0079
+    1390:	10 91 7a 00 	lds	r17, 0x007A
+    1394:	20 91 7b 00 	lds	r18, 0x007B
+    1398:	30 91 7c 00 	lds	r19, 0x007C
+    139c:	68 ee       	ldi	r22, 0xE8	; 232
+    139e:	73 e0       	ldi	r23, 0x03	; 3
+    13a0:	9a d2       	rcall	.+1332   	; 0x18d6 <__divmodhi4>
+    13a2:	ac 01       	movw	r20, r24
+    13a4:	66 27       	eor	r22, r22
+    13a6:	57 fd       	sbrc	r21, 7
+    13a8:	60 95       	com	r22
+    13aa:	76 2f       	mov	r23, r22
+    13ac:	40 0f       	add	r20, r16
+    13ae:	51 1f       	adc	r21, r17
+    13b0:	62 1f       	adc	r22, r18
+    13b2:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    13b4:	40 32       	cpi	r20, 0x20	; 32
+    13b6:	83 e0       	ldi	r24, 0x03	; 3
+    13b8:	58 07       	cpc	r21, r24
+    13ba:	80 e0       	ldi	r24, 0x00	; 0
+    13bc:	68 07       	cpc	r22, r24
+    13be:	80 e0       	ldi	r24, 0x00	; 0
+    13c0:	78 07       	cpc	r23, r24
+    13c2:	0c f4       	brge	.+2      	; 0x13c6 <__vector_5+0x1ba>
+    13c4:	be c1       	rjmp	.+892    	; 0x1742 <__vector_5+0x536>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    13c6:	81 e0       	ldi	r24, 0x01	; 1
+    13c8:	90 e0       	ldi	r25, 0x00	; 0
+    13ca:	90 93 89 00 	sts	0x0089, r25
+    13ce:	80 93 88 00 	sts	0x0088, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    13d2:	72 d2       	rcall	.+1252   	; 0x18b8 <rand>
+    13d4:	00 91 79 00 	lds	r16, 0x0079
+    13d8:	10 91 7a 00 	lds	r17, 0x007A
+    13dc:	20 91 7b 00 	lds	r18, 0x007B
+    13e0:	30 91 7c 00 	lds	r19, 0x007C
+    13e4:	68 ee       	ldi	r22, 0xE8	; 232
+    13e6:	73 e0       	ldi	r23, 0x03	; 3
+    13e8:	76 d2       	rcall	.+1260   	; 0x18d6 <__divmodhi4>
+    13ea:	ac 01       	movw	r20, r24
+    13ec:	66 27       	eor	r22, r22
+    13ee:	57 fd       	sbrc	r21, 7
+    13f0:	60 95       	com	r22
+    13f2:	76 2f       	mov	r23, r22
+    13f4:	40 0f       	add	r20, r16
+    13f6:	51 1f       	adc	r21, r17
+    13f8:	62 1f       	adc	r22, r18
+    13fa:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    13fc:	40 32       	cpi	r20, 0x20	; 32
+    13fe:	83 e0       	ldi	r24, 0x03	; 3
+    1400:	58 07       	cpc	r21, r24
+    1402:	80 e0       	ldi	r24, 0x00	; 0
+    1404:	68 07       	cpc	r22, r24
+    1406:	80 e0       	ldi	r24, 0x00	; 0
+    1408:	78 07       	cpc	r23, r24
+    140a:	0c f4       	brge	.+2      	; 0x140e <__vector_5+0x202>
+    140c:	8f c1       	rjmp	.+798    	; 0x172c <__vector_5+0x520>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    140e:	81 e0       	ldi	r24, 0x01	; 1
+    1410:	90 e0       	ldi	r25, 0x00	; 0
+    1412:	90 93 8b 00 	sts	0x008B, r25
+    1416:	80 93 8a 00 	sts	0x008A, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    141a:	4e d2       	rcall	.+1180   	; 0x18b8 <rand>
+    141c:	00 91 79 00 	lds	r16, 0x0079
+    1420:	10 91 7a 00 	lds	r17, 0x007A
+    1424:	20 91 7b 00 	lds	r18, 0x007B
+    1428:	30 91 7c 00 	lds	r19, 0x007C
+    142c:	68 ee       	ldi	r22, 0xE8	; 232
+    142e:	73 e0       	ldi	r23, 0x03	; 3
+    1430:	52 d2       	rcall	.+1188   	; 0x18d6 <__divmodhi4>
+    1432:	ac 01       	movw	r20, r24
+    1434:	66 27       	eor	r22, r22
+    1436:	57 fd       	sbrc	r21, 7
+    1438:	60 95       	com	r22
+    143a:	76 2f       	mov	r23, r22
+    143c:	40 0f       	add	r20, r16
+    143e:	51 1f       	adc	r21, r17
+    1440:	62 1f       	adc	r22, r18
+    1442:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    1444:	40 32       	cpi	r20, 0x20	; 32
+    1446:	83 e0       	ldi	r24, 0x03	; 3
+    1448:	58 07       	cpc	r21, r24
+    144a:	80 e0       	ldi	r24, 0x00	; 0
+    144c:	68 07       	cpc	r22, r24
+    144e:	80 e0       	ldi	r24, 0x00	; 0
+    1450:	78 07       	cpc	r23, r24
+    1452:	0c f4       	brge	.+2      	; 0x1456 <__vector_5+0x24a>
+    1454:	60 c1       	rjmp	.+704    	; 0x1716 <__vector_5+0x50a>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    1456:	81 e0       	ldi	r24, 0x01	; 1
+    1458:	90 e0       	ldi	r25, 0x00	; 0
+    145a:	90 93 8d 00 	sts	0x008D, r25
+    145e:	80 93 8c 00 	sts	0x008C, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    1462:	2a d2       	rcall	.+1108   	; 0x18b8 <rand>
+    1464:	00 91 79 00 	lds	r16, 0x0079
+    1468:	10 91 7a 00 	lds	r17, 0x007A
+    146c:	20 91 7b 00 	lds	r18, 0x007B
+    1470:	30 91 7c 00 	lds	r19, 0x007C
+    1474:	68 ee       	ldi	r22, 0xE8	; 232
+    1476:	73 e0       	ldi	r23, 0x03	; 3
+    1478:	2e d2       	rcall	.+1116   	; 0x18d6 <__divmodhi4>
+    147a:	ac 01       	movw	r20, r24
+    147c:	66 27       	eor	r22, r22
+    147e:	57 fd       	sbrc	r21, 7
+    1480:	60 95       	com	r22
+    1482:	76 2f       	mov	r23, r22
+    1484:	40 0f       	add	r20, r16
+    1486:	51 1f       	adc	r21, r17
+    1488:	62 1f       	adc	r22, r18
+    148a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    148c:	40 32       	cpi	r20, 0x20	; 32
+    148e:	83 e0       	ldi	r24, 0x03	; 3
+    1490:	58 07       	cpc	r21, r24
+    1492:	80 e0       	ldi	r24, 0x00	; 0
+    1494:	68 07       	cpc	r22, r24
+    1496:	80 e0       	ldi	r24, 0x00	; 0
+    1498:	78 07       	cpc	r23, r24
+    149a:	0c f4       	brge	.+2      	; 0x149e <__vector_5+0x292>
+    149c:	31 c1       	rjmp	.+610    	; 0x1700 <__vector_5+0x4f4>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    149e:	81 e0       	ldi	r24, 0x01	; 1
+    14a0:	90 e0       	ldi	r25, 0x00	; 0
+    14a2:	90 93 8f 00 	sts	0x008F, r25
+    14a6:	80 93 8e 00 	sts	0x008E, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    14aa:	06 d2       	rcall	.+1036   	; 0x18b8 <rand>
+    14ac:	00 91 79 00 	lds	r16, 0x0079
+    14b0:	10 91 7a 00 	lds	r17, 0x007A
+    14b4:	20 91 7b 00 	lds	r18, 0x007B
+    14b8:	30 91 7c 00 	lds	r19, 0x007C
+    14bc:	68 ee       	ldi	r22, 0xE8	; 232
+    14be:	73 e0       	ldi	r23, 0x03	; 3
+    14c0:	0a d2       	rcall	.+1044   	; 0x18d6 <__divmodhi4>
+    14c2:	ac 01       	movw	r20, r24
+    14c4:	66 27       	eor	r22, r22
+    14c6:	57 fd       	sbrc	r21, 7
+    14c8:	60 95       	com	r22
+    14ca:	76 2f       	mov	r23, r22
+    14cc:	40 0f       	add	r20, r16
+    14ce:	51 1f       	adc	r21, r17
+    14d0:	62 1f       	adc	r22, r18
+    14d2:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    14d4:	40 32       	cpi	r20, 0x20	; 32
+    14d6:	83 e0       	ldi	r24, 0x03	; 3
+    14d8:	58 07       	cpc	r21, r24
+    14da:	80 e0       	ldi	r24, 0x00	; 0
+    14dc:	68 07       	cpc	r22, r24
+    14de:	80 e0       	ldi	r24, 0x00	; 0
+    14e0:	78 07       	cpc	r23, r24
+    14e2:	0c f4       	brge	.+2      	; 0x14e6 <__vector_5+0x2da>
+    14e4:	02 c1       	rjmp	.+516    	; 0x16ea <__vector_5+0x4de>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    14e6:	81 e0       	ldi	r24, 0x01	; 1
+    14e8:	90 e0       	ldi	r25, 0x00	; 0
+    14ea:	90 93 91 00 	sts	0x0091, r25
+    14ee:	80 93 90 00 	sts	0x0090, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    14f2:	e2 d1       	rcall	.+964    	; 0x18b8 <rand>
+    14f4:	00 91 79 00 	lds	r16, 0x0079
+    14f8:	10 91 7a 00 	lds	r17, 0x007A
+    14fc:	20 91 7b 00 	lds	r18, 0x007B
+    1500:	30 91 7c 00 	lds	r19, 0x007C
+    1504:	68 ee       	ldi	r22, 0xE8	; 232
+    1506:	73 e0       	ldi	r23, 0x03	; 3
+    1508:	e6 d1       	rcall	.+972    	; 0x18d6 <__divmodhi4>
+    150a:	ac 01       	movw	r20, r24
+    150c:	66 27       	eor	r22, r22
+    150e:	57 fd       	sbrc	r21, 7
+    1510:	60 95       	com	r22
+    1512:	76 2f       	mov	r23, r22
+    1514:	40 0f       	add	r20, r16
+    1516:	51 1f       	adc	r21, r17
+    1518:	62 1f       	adc	r22, r18
+    151a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    151c:	40 32       	cpi	r20, 0x20	; 32
+    151e:	83 e0       	ldi	r24, 0x03	; 3
+    1520:	58 07       	cpc	r21, r24
+    1522:	80 e0       	ldi	r24, 0x00	; 0
+    1524:	68 07       	cpc	r22, r24
+    1526:	80 e0       	ldi	r24, 0x00	; 0
+    1528:	78 07       	cpc	r23, r24
+    152a:	0c f4       	brge	.+2      	; 0x152e <__vector_5+0x322>
+    152c:	d3 c0       	rjmp	.+422    	; 0x16d4 <__vector_5+0x4c8>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    152e:	81 e0       	ldi	r24, 0x01	; 1
+    1530:	90 e0       	ldi	r25, 0x00	; 0
+    1532:	90 93 93 00 	sts	0x0093, r25
+    1536:	80 93 92 00 	sts	0x0092, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    153a:	be d1       	rcall	.+892    	; 0x18b8 <rand>
+    153c:	00 91 79 00 	lds	r16, 0x0079
+    1540:	10 91 7a 00 	lds	r17, 0x007A
+    1544:	20 91 7b 00 	lds	r18, 0x007B
+    1548:	30 91 7c 00 	lds	r19, 0x007C
+    154c:	68 ee       	ldi	r22, 0xE8	; 232
+    154e:	73 e0       	ldi	r23, 0x03	; 3
+    1550:	c2 d1       	rcall	.+900    	; 0x18d6 <__divmodhi4>
+    1552:	ac 01       	movw	r20, r24
+    1554:	66 27       	eor	r22, r22
+    1556:	57 fd       	sbrc	r21, 7
+    1558:	60 95       	com	r22
+    155a:	76 2f       	mov	r23, r22
+    155c:	40 0f       	add	r20, r16
+    155e:	51 1f       	adc	r21, r17
+    1560:	62 1f       	adc	r22, r18
+    1562:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    1564:	40 32       	cpi	r20, 0x20	; 32
+    1566:	83 e0       	ldi	r24, 0x03	; 3
+    1568:	58 07       	cpc	r21, r24
+    156a:	80 e0       	ldi	r24, 0x00	; 0
+    156c:	68 07       	cpc	r22, r24
+    156e:	80 e0       	ldi	r24, 0x00	; 0
+    1570:	78 07       	cpc	r23, r24
+    1572:	0c f4       	brge	.+2      	; 0x1576 <__vector_5+0x36a>
+    1574:	a4 c0       	rjmp	.+328    	; 0x16be <__vector_5+0x4b2>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    1576:	81 e0       	ldi	r24, 0x01	; 1
+    1578:	90 e0       	ldi	r25, 0x00	; 0
+    157a:	90 93 95 00 	sts	0x0095, r25
+    157e:	80 93 94 00 	sts	0x0094, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    1582:	9a d1       	rcall	.+820    	; 0x18b8 <rand>
+    1584:	00 91 79 00 	lds	r16, 0x0079
+    1588:	10 91 7a 00 	lds	r17, 0x007A
+    158c:	20 91 7b 00 	lds	r18, 0x007B
+    1590:	30 91 7c 00 	lds	r19, 0x007C
+    1594:	68 ee       	ldi	r22, 0xE8	; 232
+    1596:	73 e0       	ldi	r23, 0x03	; 3
+    1598:	9e d1       	rcall	.+828    	; 0x18d6 <__divmodhi4>
+    159a:	ac 01       	movw	r20, r24
+    159c:	66 27       	eor	r22, r22
+    159e:	57 fd       	sbrc	r21, 7
+    15a0:	60 95       	com	r22
+    15a2:	76 2f       	mov	r23, r22
+    15a4:	40 0f       	add	r20, r16
+    15a6:	51 1f       	adc	r21, r17
+    15a8:	62 1f       	adc	r22, r18
+    15aa:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    15ac:	40 32       	cpi	r20, 0x20	; 32
+    15ae:	83 e0       	ldi	r24, 0x03	; 3
+    15b0:	58 07       	cpc	r21, r24
+    15b2:	80 e0       	ldi	r24, 0x00	; 0
+    15b4:	68 07       	cpc	r22, r24
+    15b6:	80 e0       	ldi	r24, 0x00	; 0
+    15b8:	78 07       	cpc	r23, r24
+    15ba:	0c f4       	brge	.+2      	; 0x15be <__vector_5+0x3b2>
+    15bc:	75 c0       	rjmp	.+234    	; 0x16a8 <__vector_5+0x49c>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    15be:	81 e0       	ldi	r24, 0x01	; 1
+    15c0:	90 e0       	ldi	r25, 0x00	; 0
+    15c2:	90 93 97 00 	sts	0x0097, r25
+    15c6:	80 93 96 00 	sts	0x0096, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    15ca:	76 d1       	rcall	.+748    	; 0x18b8 <rand>
+    15cc:	00 91 79 00 	lds	r16, 0x0079
+    15d0:	10 91 7a 00 	lds	r17, 0x007A
+    15d4:	20 91 7b 00 	lds	r18, 0x007B
+    15d8:	30 91 7c 00 	lds	r19, 0x007C
+    15dc:	68 ee       	ldi	r22, 0xE8	; 232
+    15de:	73 e0       	ldi	r23, 0x03	; 3
+    15e0:	7a d1       	rcall	.+756    	; 0x18d6 <__divmodhi4>
+    15e2:	ac 01       	movw	r20, r24
+    15e4:	66 27       	eor	r22, r22
+    15e6:	57 fd       	sbrc	r21, 7
+    15e8:	60 95       	com	r22
+    15ea:	76 2f       	mov	r23, r22
+    15ec:	40 0f       	add	r20, r16
+    15ee:	51 1f       	adc	r21, r17
+    15f0:	62 1f       	adc	r22, r18
+    15f2:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    15f4:	40 32       	cpi	r20, 0x20	; 32
+    15f6:	83 e0       	ldi	r24, 0x03	; 3
+    15f8:	58 07       	cpc	r21, r24
+    15fa:	80 e0       	ldi	r24, 0x00	; 0
+    15fc:	68 07       	cpc	r22, r24
+    15fe:	80 e0       	ldi	r24, 0x00	; 0
+    1600:	78 07       	cpc	r23, r24
+    1602:	0c f4       	brge	.+2      	; 0x1606 <__vector_5+0x3fa>
+    1604:	46 c0       	rjmp	.+140    	; 0x1692 <__vector_5+0x486>
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    1606:	81 e0       	ldi	r24, 0x01	; 1
+    1608:	90 e0       	ldi	r25, 0x00	; 0
+    160a:	90 93 99 00 	sts	0x0099, r25
+    160e:	80 93 98 00 	sts	0x0098, r24
+void randomplay(){
+long decide = 0;
+for (int fly = 0; fly < NumberOfFlys; fly++)
+  {
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+    1612:	52 d1       	rcall	.+676    	; 0x18b8 <rand>
+    1614:	00 91 79 00 	lds	r16, 0x0079
+    1618:	10 91 7a 00 	lds	r17, 0x007A
+    161c:	20 91 7b 00 	lds	r18, 0x007B
+    1620:	30 91 7c 00 	lds	r19, 0x007C
+    1624:	68 ee       	ldi	r22, 0xE8	; 232
+    1626:	73 e0       	ldi	r23, 0x03	; 3
+    1628:	56 d1       	rcall	.+684    	; 0x18d6 <__divmodhi4>
+    162a:	ac 01       	movw	r20, r24
+    162c:	66 27       	eor	r22, r22
+    162e:	57 fd       	sbrc	r21, 7
+    1630:	60 95       	com	r22
+    1632:	76 2f       	mov	r23, r22
+    1634:	40 0f       	add	r20, r16
+    1636:	51 1f       	adc	r21, r17
+    1638:	62 1f       	adc	r22, r18
+    163a:	73 1f       	adc	r23, r19
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+    163c:	40 32       	cpi	r20, 0x20	; 32
+    163e:	83 e0       	ldi	r24, 0x03	; 3
+    1640:	58 07       	cpc	r21, r24
+    1642:	80 e0       	ldi	r24, 0x00	; 0
+    1644:	68 07       	cpc	r22, r24
+    1646:	80 e0       	ldi	r24, 0x00	; 0
+    1648:	78 07       	cpc	r23, r24
+    164a:	e4 f4       	brge	.+56     	; 0x1684 <__vector_5+0x478>
+ flystatus[fly]=0;
+    164c:	10 92 9b 00 	sts	0x009B, r1
+    1650:	10 92 9a 00 	sts	0x009A, r1
+	if (decide > 500 )
+    1654:	45 5f       	subi	r20, 0xF5	; 245
+    1656:	51 40       	sbci	r21, 0x01	; 1
+    1658:	60 40       	sbci	r22, 0x00	; 0
+    165a:	70 40       	sbci	r23, 0x00	; 0
+    165c:	9c f4       	brge	.+38     	; 0x1684 <__vector_5+0x478>
+                       	activity=-1000;
+			}
+			randomplay();
+	}
+	
+}
+    165e:	ff 91       	pop	r31
+    1660:	ef 91       	pop	r30
+    1662:	bf 91       	pop	r27
+    1664:	af 91       	pop	r26
+    1666:	9f 91       	pop	r25
+    1668:	8f 91       	pop	r24
+    166a:	7f 91       	pop	r23
+    166c:	6f 91       	pop	r22
+    166e:	5f 91       	pop	r21
+    1670:	4f 91       	pop	r20
+    1672:	3f 91       	pop	r19
+    1674:	2f 91       	pop	r18
+    1676:	1f 91       	pop	r17
+    1678:	0f 91       	pop	r16
+    167a:	0f 90       	pop	r0
+    167c:	0f be       	out	0x3f, r0	; 63
+    167e:	0f 90       	pop	r0
+    1680:	1f 90       	pop	r1
+    1682:	18 95       	reti
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+	if (decide > 500 )
+ flystatus[fly]=1;
+    1684:	81 e0       	ldi	r24, 0x01	; 1
+    1686:	90 e0       	ldi	r25, 0x00	; 0
+    1688:	90 93 9b 00 	sts	0x009B, r25
+    168c:	80 93 9a 00 	sts	0x009A, r24
+    1690:	e6 cf       	rjmp	.-52     	; 0x165e <__vector_5+0x452>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    1692:	10 92 99 00 	sts	0x0099, r1
+    1696:	10 92 98 00 	sts	0x0098, r1
+	if (decide > 500 )
+    169a:	45 5f       	subi	r20, 0xF5	; 245
+    169c:	51 40       	sbci	r21, 0x01	; 1
+    169e:	60 40       	sbci	r22, 0x00	; 0
+    16a0:	70 40       	sbci	r23, 0x00	; 0
+    16a2:	0c f4       	brge	.+2      	; 0x16a6 <__vector_5+0x49a>
+    16a4:	b6 cf       	rjmp	.-148    	; 0x1612 <__vector_5+0x406>
+    16a6:	af cf       	rjmp	.-162    	; 0x1606 <__vector_5+0x3fa>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    16a8:	10 92 97 00 	sts	0x0097, r1
+    16ac:	10 92 96 00 	sts	0x0096, r1
+	if (decide > 500 )
+    16b0:	45 5f       	subi	r20, 0xF5	; 245
+    16b2:	51 40       	sbci	r21, 0x01	; 1
+    16b4:	60 40       	sbci	r22, 0x00	; 0
+    16b6:	70 40       	sbci	r23, 0x00	; 0
+    16b8:	0c f4       	brge	.+2      	; 0x16bc <__vector_5+0x4b0>
+    16ba:	87 cf       	rjmp	.-242    	; 0x15ca <__vector_5+0x3be>
+    16bc:	80 cf       	rjmp	.-256    	; 0x15be <__vector_5+0x3b2>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    16be:	10 92 95 00 	sts	0x0095, r1
+    16c2:	10 92 94 00 	sts	0x0094, r1
+	if (decide > 500 )
+    16c6:	45 5f       	subi	r20, 0xF5	; 245
+    16c8:	51 40       	sbci	r21, 0x01	; 1
+    16ca:	60 40       	sbci	r22, 0x00	; 0
+    16cc:	70 40       	sbci	r23, 0x00	; 0
+    16ce:	0c f4       	brge	.+2      	; 0x16d2 <__vector_5+0x4c6>
+    16d0:	58 cf       	rjmp	.-336    	; 0x1582 <__vector_5+0x376>
+    16d2:	51 cf       	rjmp	.-350    	; 0x1576 <__vector_5+0x36a>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    16d4:	10 92 93 00 	sts	0x0093, r1
+    16d8:	10 92 92 00 	sts	0x0092, r1
+	if (decide > 500 )
+    16dc:	45 5f       	subi	r20, 0xF5	; 245
+    16de:	51 40       	sbci	r21, 0x01	; 1
+    16e0:	60 40       	sbci	r22, 0x00	; 0
+    16e2:	70 40       	sbci	r23, 0x00	; 0
+    16e4:	0c f4       	brge	.+2      	; 0x16e8 <__vector_5+0x4dc>
+    16e6:	29 cf       	rjmp	.-430    	; 0x153a <__vector_5+0x32e>
+    16e8:	22 cf       	rjmp	.-444    	; 0x152e <__vector_5+0x322>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    16ea:	10 92 91 00 	sts	0x0091, r1
+    16ee:	10 92 90 00 	sts	0x0090, r1
+	if (decide > 500 )
+    16f2:	45 5f       	subi	r20, 0xF5	; 245
+    16f4:	51 40       	sbci	r21, 0x01	; 1
+    16f6:	60 40       	sbci	r22, 0x00	; 0
+    16f8:	70 40       	sbci	r23, 0x00	; 0
+    16fa:	0c f4       	brge	.+2      	; 0x16fe <__vector_5+0x4f2>
+    16fc:	fa ce       	rjmp	.-524    	; 0x14f2 <__vector_5+0x2e6>
+    16fe:	f3 ce       	rjmp	.-538    	; 0x14e6 <__vector_5+0x2da>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    1700:	10 92 8f 00 	sts	0x008F, r1
+    1704:	10 92 8e 00 	sts	0x008E, r1
+	if (decide > 500 )
+    1708:	45 5f       	subi	r20, 0xF5	; 245
+    170a:	51 40       	sbci	r21, 0x01	; 1
+    170c:	60 40       	sbci	r22, 0x00	; 0
+    170e:	70 40       	sbci	r23, 0x00	; 0
+    1710:	0c f4       	brge	.+2      	; 0x1714 <__vector_5+0x508>
+    1712:	cb ce       	rjmp	.-618    	; 0x14aa <__vector_5+0x29e>
+    1714:	c4 ce       	rjmp	.-632    	; 0x149e <__vector_5+0x292>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    1716:	10 92 8d 00 	sts	0x008D, r1
+    171a:	10 92 8c 00 	sts	0x008C, r1
+	if (decide > 500 )
+    171e:	45 5f       	subi	r20, 0xF5	; 245
+    1720:	51 40       	sbci	r21, 0x01	; 1
+    1722:	60 40       	sbci	r22, 0x00	; 0
+    1724:	70 40       	sbci	r23, 0x00	; 0
+    1726:	0c f4       	brge	.+2      	; 0x172a <__vector_5+0x51e>
+    1728:	9c ce       	rjmp	.-712    	; 0x1462 <__vector_5+0x256>
+    172a:	95 ce       	rjmp	.-726    	; 0x1456 <__vector_5+0x24a>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    172c:	10 92 8b 00 	sts	0x008B, r1
+    1730:	10 92 8a 00 	sts	0x008A, r1
+	if (decide > 500 )
+    1734:	45 5f       	subi	r20, 0xF5	; 245
+    1736:	51 40       	sbci	r21, 0x01	; 1
+    1738:	60 40       	sbci	r22, 0x00	; 0
+    173a:	70 40       	sbci	r23, 0x00	; 0
+    173c:	0c f4       	brge	.+2      	; 0x1740 <__vector_5+0x534>
+    173e:	6d ce       	rjmp	.-806    	; 0x141a <__vector_5+0x20e>
+    1740:	66 ce       	rjmp	.-820    	; 0x140e <__vector_5+0x202>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    1742:	10 92 89 00 	sts	0x0089, r1
+    1746:	10 92 88 00 	sts	0x0088, r1
+	if (decide > 500 )
+    174a:	45 5f       	subi	r20, 0xF5	; 245
+    174c:	51 40       	sbci	r21, 0x01	; 1
+    174e:	60 40       	sbci	r22, 0x00	; 0
+    1750:	70 40       	sbci	r23, 0x00	; 0
+    1752:	0c f4       	brge	.+2      	; 0x1756 <__vector_5+0x54a>
+    1754:	3e ce       	rjmp	.-900    	; 0x13d2 <__vector_5+0x1c6>
+    1756:	37 ce       	rjmp	.-914    	; 0x13c6 <__vector_5+0x1ba>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    1758:	10 92 87 00 	sts	0x0087, r1
+    175c:	10 92 86 00 	sts	0x0086, r1
+	if (decide > 500 )
+    1760:	45 5f       	subi	r20, 0xF5	; 245
+    1762:	51 40       	sbci	r21, 0x01	; 1
+    1764:	60 40       	sbci	r22, 0x00	; 0
+    1766:	70 40       	sbci	r23, 0x00	; 0
+    1768:	0c f4       	brge	.+2      	; 0x176c <__vector_5+0x560>
+    176a:	0f ce       	rjmp	.-994    	; 0x138a <__vector_5+0x17e>
+    176c:	08 ce       	rjmp	.-1008   	; 0x137e <__vector_5+0x172>
+  //decide = ((rand() % 1200) - ( rand() % abs(1000-activity)) + activity );
+  decide = ((rand() % 1000 ) + activity );
+//  decide = 900;
+ // int decide = random(20) + personality[fly];
+	if (decide < 800 )
+ flystatus[fly]=0;
+    176e:	10 92 85 00 	sts	0x0085, r1
+    1772:	10 92 84 00 	sts	0x0084, r1
+	if (decide > 500 )
+    1776:	45 5f       	subi	r20, 0xF5	; 245
+    1778:	51 40       	sbci	r21, 0x01	; 1
+    177a:	60 40       	sbci	r22, 0x00	; 0
+    177c:	70 40       	sbci	r23, 0x00	; 0
+    177e:	0c f4       	brge	.+2      	; 0x1782 <__vector_5+0x576>
+    1780:	e0 cd       	rjmp	.-1088   	; 0x1342 <__vector_5+0x136>
+    1782:	d9 cd       	rjmp	.-1102   	; 0x1336 <__vector_5+0x12a>
+			{
+			if (lightness_counter < 100)
+			lightness_counter++;
+                        activity -= 100;
+             	        if (activity > -1000)
+                       	activity=-1000;
+    1784:	88 e1       	ldi	r24, 0x18	; 24
+    1786:	9c ef       	ldi	r25, 0xFC	; 252
+    1788:	af ef       	ldi	r26, 0xFF	; 255
+    178a:	bf ef       	ldi	r27, 0xFF	; 255
+    178c:	80 93 79 00 	sts	0x0079, r24
+    1790:	90 93 7a 00 	sts	0x007A, r25
+    1794:	a0 93 7b 00 	sts	0x007B, r26
+    1798:	b0 93 7c 00 	sts	0x007C, r27
+    179c:	ae cd       	rjmp	.-1188   	; 0x12fa <__vector_5+0xee>
+	tick++;
+	if (tick % 5== 0)
+	{
+			if ( analogRead() < 300 )
+			{
+			lightness_counter=0;
+    179e:	10 92 83 00 	sts	0x0083, r1
+    17a2:	10 92 82 00 	sts	0x0082, r1
+                        //activity = activity + 100;
+                        activity = activity + ( rand() % 10 );
+    17a6:	88 d0       	rcall	.+272    	; 0x18b8 <rand>
+    17a8:	00 91 79 00 	lds	r16, 0x0079
+    17ac:	10 91 7a 00 	lds	r17, 0x007A
+    17b0:	20 91 7b 00 	lds	r18, 0x007B
+    17b4:	30 91 7c 00 	lds	r19, 0x007C
+    17b8:	6a e0       	ldi	r22, 0x0A	; 10
+    17ba:	70 e0       	ldi	r23, 0x00	; 0
+    17bc:	8c d0       	rcall	.+280    	; 0x18d6 <__divmodhi4>
+    17be:	aa 27       	eor	r26, r26
+    17c0:	97 fd       	sbrc	r25, 7
+    17c2:	a0 95       	com	r26
+    17c4:	ba 2f       	mov	r27, r26
+    17c6:	80 0f       	add	r24, r16
+    17c8:	91 1f       	adc	r25, r17
+    17ca:	a2 1f       	adc	r26, r18
+    17cc:	b3 1f       	adc	r27, r19
+    17ce:	80 93 79 00 	sts	0x0079, r24
+    17d2:	90 93 7a 00 	sts	0x007A, r25
+    17d6:	a0 93 7b 00 	sts	0x007B, r26
+    17da:	b0 93 7c 00 	sts	0x007C, r27
+                        if (activity >= 100)
+    17de:	80 91 79 00 	lds	r24, 0x0079
+    17e2:	90 91 7a 00 	lds	r25, 0x007A
+    17e6:	a0 91 7b 00 	lds	r26, 0x007B
+    17ea:	b0 91 7c 00 	lds	r27, 0x007C
+    17ee:	84 36       	cpi	r24, 0x64	; 100
+    17f0:	91 05       	cpc	r25, r1
+    17f2:	a1 05       	cpc	r26, r1
+    17f4:	b1 05       	cpc	r27, r1
+    17f6:	0c f4       	brge	.+2      	; 0x17fa <__vector_5+0x5ee>
+    17f8:	80 cd       	rjmp	.-1280   	; 0x12fa <__vector_5+0xee>
+                        activity=( 100 - rand () % 1000);
+    17fa:	5e d0       	rcall	.+188    	; 0x18b8 <rand>
+    17fc:	68 ee       	ldi	r22, 0xE8	; 232
+    17fe:	73 e0       	ldi	r23, 0x03	; 3
+    1800:	6a d0       	rcall	.+212    	; 0x18d6 <__divmodhi4>
+    1802:	24 e6       	ldi	r18, 0x64	; 100
+    1804:	30 e0       	ldi	r19, 0x00	; 0
+    1806:	28 1b       	sub	r18, r24
+    1808:	39 0b       	sbc	r19, r25
+    180a:	44 27       	eor	r20, r20
+    180c:	37 fd       	sbrc	r19, 7
+    180e:	40 95       	com	r20
+    1810:	54 2f       	mov	r21, r20
+    1812:	20 93 79 00 	sts	0x0079, r18
+    1816:	30 93 7a 00 	sts	0x007A, r19
+    181a:	40 93 7b 00 	sts	0x007B, r20
+    181e:	50 93 7c 00 	sts	0x007C, r21
+    1822:	6b cd       	rjmp	.-1322   	; 0x12fa <__vector_5+0xee>
+
+00001824 <do_rand>:
+    1824:	a0 e0       	ldi	r26, 0x00	; 0
+    1826:	b0 e0       	ldi	r27, 0x00	; 0
+    1828:	e7 e1       	ldi	r30, 0x17	; 23
+    182a:	fc e0       	ldi	r31, 0x0C	; 12
+    182c:	d9 c0       	rjmp	.+434    	; 0x19e0 <__prologue_saves__+0x10>
+    182e:	ec 01       	movw	r28, r24
+    1830:	a8 80       	ld	r10, Y
+    1832:	b9 80       	ldd	r11, Y+1	; 0x01
+    1834:	ca 80       	ldd	r12, Y+2	; 0x02
+    1836:	db 80       	ldd	r13, Y+3	; 0x03
+    1838:	a1 14       	cp	r10, r1
+    183a:	b1 04       	cpc	r11, r1
+    183c:	c1 04       	cpc	r12, r1
+    183e:	d1 04       	cpc	r13, r1
+    1840:	41 f4       	brne	.+16     	; 0x1852 <do_rand+0x2e>
+    1842:	84 e2       	ldi	r24, 0x24	; 36
+    1844:	a8 2e       	mov	r10, r24
+    1846:	89 ed       	ldi	r24, 0xD9	; 217
+    1848:	b8 2e       	mov	r11, r24
+    184a:	8b e5       	ldi	r24, 0x5B	; 91
+    184c:	c8 2e       	mov	r12, r24
+    184e:	87 e0       	ldi	r24, 0x07	; 7
+    1850:	d8 2e       	mov	r13, r24
+    1852:	c6 01       	movw	r24, r12
+    1854:	b5 01       	movw	r22, r10
+    1856:	2d e1       	ldi	r18, 0x1D	; 29
+    1858:	33 ef       	ldi	r19, 0xF3	; 243
+    185a:	41 e0       	ldi	r20, 0x01	; 1
+    185c:	50 e0       	ldi	r21, 0x00	; 0
+    185e:	4e d0       	rcall	.+156    	; 0x18fc <__divmodsi4>
+    1860:	27 ea       	ldi	r18, 0xA7	; 167
+    1862:	31 e4       	ldi	r19, 0x41	; 65
+    1864:	40 e0       	ldi	r20, 0x00	; 0
+    1866:	50 e0       	ldi	r21, 0x00	; 0
+    1868:	9a d0       	rcall	.+308    	; 0x199e <__mulsi3>
+    186a:	7b 01       	movw	r14, r22
+    186c:	8c 01       	movw	r16, r24
+    186e:	c6 01       	movw	r24, r12
+    1870:	b5 01       	movw	r22, r10
+    1872:	2d e1       	ldi	r18, 0x1D	; 29
+    1874:	33 ef       	ldi	r19, 0xF3	; 243
+    1876:	41 e0       	ldi	r20, 0x01	; 1
+    1878:	50 e0       	ldi	r21, 0x00	; 0
+    187a:	40 d0       	rcall	.+128    	; 0x18fc <__divmodsi4>
+    187c:	ca 01       	movw	r24, r20
+    187e:	b9 01       	movw	r22, r18
+    1880:	2c ee       	ldi	r18, 0xEC	; 236
+    1882:	34 ef       	ldi	r19, 0xF4	; 244
+    1884:	4f ef       	ldi	r20, 0xFF	; 255
+    1886:	5f ef       	ldi	r21, 0xFF	; 255
+    1888:	8a d0       	rcall	.+276    	; 0x199e <__mulsi3>
+    188a:	6e 0d       	add	r22, r14
+    188c:	7f 1d       	adc	r23, r15
+    188e:	80 1f       	adc	r24, r16
+    1890:	91 1f       	adc	r25, r17
+    1892:	97 ff       	sbrs	r25, 7
+    1894:	04 c0       	rjmp	.+8      	; 0x189e <do_rand+0x7a>
+    1896:	61 50       	subi	r22, 0x01	; 1
+    1898:	70 40       	sbci	r23, 0x00	; 0
+    189a:	80 40       	sbci	r24, 0x00	; 0
+    189c:	90 48       	sbci	r25, 0x80	; 128
+    189e:	68 83       	st	Y, r22
+    18a0:	79 83       	std	Y+1, r23	; 0x01
+    18a2:	8a 83       	std	Y+2, r24	; 0x02
+    18a4:	9b 83       	std	Y+3, r25	; 0x03
+    18a6:	9b 01       	movw	r18, r22
+    18a8:	3f 77       	andi	r19, 0x7F	; 127
+    18aa:	c9 01       	movw	r24, r18
+    18ac:	cd b7       	in	r28, 0x3d	; 61
+    18ae:	de b7       	in	r29, 0x3e	; 62
+    18b0:	ea e0       	ldi	r30, 0x0A	; 10
+    18b2:	b2 c0       	rjmp	.+356    	; 0x1a18 <__epilogue_restores__+0x10>
+
+000018b4 <rand_r>:
+    18b4:	b7 df       	rcall	.-146    	; 0x1824 <do_rand>
+    18b6:	08 95       	ret
+
+000018b8 <rand>:
+    18b8:	8d e7       	ldi	r24, 0x7D	; 125
+    18ba:	90 e0       	ldi	r25, 0x00	; 0
+    18bc:	b3 df       	rcall	.-154    	; 0x1824 <do_rand>
+    18be:	08 95       	ret
+
+000018c0 <srand>:
+    18c0:	a0 e0       	ldi	r26, 0x00	; 0
+    18c2:	b0 e0       	ldi	r27, 0x00	; 0
+    18c4:	80 93 7d 00 	sts	0x007D, r24
+    18c8:	90 93 7e 00 	sts	0x007E, r25
+    18cc:	a0 93 7f 00 	sts	0x007F, r26
+    18d0:	b0 93 80 00 	sts	0x0080, r27
+    18d4:	08 95       	ret
+
+000018d6 <__divmodhi4>:
+    18d6:	97 fb       	bst	r25, 7
+    18d8:	09 2e       	mov	r0, r25
+    18da:	07 26       	eor	r0, r23
+    18dc:	0a d0       	rcall	.+20     	; 0x18f2 <__divmodhi4_neg1>
+    18de:	77 fd       	sbrc	r23, 7
+    18e0:	04 d0       	rcall	.+8      	; 0x18ea <__divmodhi4_neg2>
+    18e2:	27 d0       	rcall	.+78     	; 0x1932 <__udivmodhi4>
+    18e4:	06 d0       	rcall	.+12     	; 0x18f2 <__divmodhi4_neg1>
+    18e6:	00 20       	and	r0, r0
+    18e8:	1a f4       	brpl	.+6      	; 0x18f0 <__divmodhi4_exit>
+
+000018ea <__divmodhi4_neg2>:
+    18ea:	70 95       	com	r23
+    18ec:	61 95       	neg	r22
+    18ee:	7f 4f       	sbci	r23, 0xFF	; 255
+
+000018f0 <__divmodhi4_exit>:
+    18f0:	08 95       	ret
+
+000018f2 <__divmodhi4_neg1>:
+    18f2:	f6 f7       	brtc	.-4      	; 0x18f0 <__divmodhi4_exit>
+    18f4:	90 95       	com	r25
+    18f6:	81 95       	neg	r24
+    18f8:	9f 4f       	sbci	r25, 0xFF	; 255
+    18fa:	08 95       	ret
+
+000018fc <__divmodsi4>:
+    18fc:	97 fb       	bst	r25, 7
+    18fe:	09 2e       	mov	r0, r25
+    1900:	05 26       	eor	r0, r21
+    1902:	0e d0       	rcall	.+28     	; 0x1920 <__divmodsi4_neg1>
+    1904:	57 fd       	sbrc	r21, 7
+    1906:	04 d0       	rcall	.+8      	; 0x1910 <__divmodsi4_neg2>
+    1908:	28 d0       	rcall	.+80     	; 0x195a <__udivmodsi4>
+    190a:	0a d0       	rcall	.+20     	; 0x1920 <__divmodsi4_neg1>
+    190c:	00 1c       	adc	r0, r0
+    190e:	38 f4       	brcc	.+14     	; 0x191e <__divmodsi4_exit>
+
+00001910 <__divmodsi4_neg2>:
+    1910:	50 95       	com	r21
+    1912:	40 95       	com	r20
+    1914:	30 95       	com	r19
+    1916:	21 95       	neg	r18
+    1918:	3f 4f       	sbci	r19, 0xFF	; 255
+    191a:	4f 4f       	sbci	r20, 0xFF	; 255
+    191c:	5f 4f       	sbci	r21, 0xFF	; 255
+
+0000191e <__divmodsi4_exit>:
+    191e:	08 95       	ret
+
+00001920 <__divmodsi4_neg1>:
+    1920:	f6 f7       	brtc	.-4      	; 0x191e <__divmodsi4_exit>
+    1922:	90 95       	com	r25
+    1924:	80 95       	com	r24
+    1926:	70 95       	com	r23
+    1928:	61 95       	neg	r22
+    192a:	7f 4f       	sbci	r23, 0xFF	; 255
+    192c:	8f 4f       	sbci	r24, 0xFF	; 255
+    192e:	9f 4f       	sbci	r25, 0xFF	; 255
+    1930:	08 95       	ret
+
+00001932 <__udivmodhi4>:
+    1932:	aa 1b       	sub	r26, r26
+    1934:	bb 1b       	sub	r27, r27
+    1936:	51 e1       	ldi	r21, 0x11	; 17
+    1938:	07 c0       	rjmp	.+14     	; 0x1948 <__udivmodhi4_ep>
+
+0000193a <__udivmodhi4_loop>:
+    193a:	aa 1f       	adc	r26, r26
+    193c:	bb 1f       	adc	r27, r27
+    193e:	a6 17       	cp	r26, r22
+    1940:	b7 07       	cpc	r27, r23
+    1942:	10 f0       	brcs	.+4      	; 0x1948 <__udivmodhi4_ep>
+    1944:	a6 1b       	sub	r26, r22
+    1946:	b7 0b       	sbc	r27, r23
+
+00001948 <__udivmodhi4_ep>:
+    1948:	88 1f       	adc	r24, r24
+    194a:	99 1f       	adc	r25, r25
+    194c:	5a 95       	dec	r21
+    194e:	a9 f7       	brne	.-22     	; 0x193a <__udivmodhi4_loop>
+    1950:	80 95       	com	r24
+    1952:	90 95       	com	r25
+    1954:	bc 01       	movw	r22, r24
+    1956:	cd 01       	movw	r24, r26
+    1958:	08 95       	ret
+
+0000195a <__udivmodsi4>:
+    195a:	a1 e2       	ldi	r26, 0x21	; 33
+    195c:	1a 2e       	mov	r1, r26
+    195e:	aa 1b       	sub	r26, r26
+    1960:	bb 1b       	sub	r27, r27
+    1962:	fd 01       	movw	r30, r26
+    1964:	0d c0       	rjmp	.+26     	; 0x1980 <__udivmodsi4_ep>
+
+00001966 <__udivmodsi4_loop>:
+    1966:	aa 1f       	adc	r26, r26
+    1968:	bb 1f       	adc	r27, r27
+    196a:	ee 1f       	adc	r30, r30
+    196c:	ff 1f       	adc	r31, r31
+    196e:	a2 17       	cp	r26, r18
+    1970:	b3 07       	cpc	r27, r19
+    1972:	e4 07       	cpc	r30, r20
+    1974:	f5 07       	cpc	r31, r21
+    1976:	20 f0       	brcs	.+8      	; 0x1980 <__udivmodsi4_ep>
+    1978:	a2 1b       	sub	r26, r18
+    197a:	b3 0b       	sbc	r27, r19
+    197c:	e4 0b       	sbc	r30, r20
+    197e:	f5 0b       	sbc	r31, r21
+
+00001980 <__udivmodsi4_ep>:
+    1980:	66 1f       	adc	r22, r22
+    1982:	77 1f       	adc	r23, r23
+    1984:	88 1f       	adc	r24, r24
+    1986:	99 1f       	adc	r25, r25
+    1988:	1a 94       	dec	r1
+    198a:	69 f7       	brne	.-38     	; 0x1966 <__udivmodsi4_loop>
+    198c:	60 95       	com	r22
+    198e:	70 95       	com	r23
+    1990:	80 95       	com	r24
+    1992:	90 95       	com	r25
+    1994:	9b 01       	movw	r18, r22
+    1996:	ac 01       	movw	r20, r24
+    1998:	bd 01       	movw	r22, r26
+    199a:	cf 01       	movw	r24, r30
+    199c:	08 95       	ret
+
+0000199e <__mulsi3>:
+    199e:	ff 27       	eor	r31, r31
+    19a0:	ee 27       	eor	r30, r30
+    19a2:	bb 27       	eor	r27, r27
+    19a4:	aa 27       	eor	r26, r26
+
+000019a6 <__mulsi3_loop>:
+    19a6:	60 ff       	sbrs	r22, 0
+    19a8:	04 c0       	rjmp	.+8      	; 0x19b2 <__mulsi3_skip1>
+    19aa:	a2 0f       	add	r26, r18
+    19ac:	b3 1f       	adc	r27, r19
+    19ae:	e4 1f       	adc	r30, r20
+    19b0:	f5 1f       	adc	r31, r21
+
+000019b2 <__mulsi3_skip1>:
+    19b2:	22 0f       	add	r18, r18
+    19b4:	33 1f       	adc	r19, r19
+    19b6:	44 1f       	adc	r20, r20
+    19b8:	55 1f       	adc	r21, r21
+    19ba:	96 95       	lsr	r25
+    19bc:	87 95       	ror	r24
+    19be:	77 95       	ror	r23
+    19c0:	67 95       	ror	r22
+    19c2:	89 f7       	brne	.-30     	; 0x19a6 <__mulsi3_loop>
+    19c4:	00 97       	sbiw	r24, 0x00	; 0
+    19c6:	76 07       	cpc	r23, r22
+    19c8:	71 f7       	brne	.-36     	; 0x19a6 <__mulsi3_loop>
+
+000019ca <__mulsi3_exit>:
+    19ca:	cf 01       	movw	r24, r30
+    19cc:	bd 01       	movw	r22, r26
+    19ce:	08 95       	ret
+
+000019d0 <__prologue_saves__>:
+    19d0:	2f 92       	push	r2
+    19d2:	3f 92       	push	r3
+    19d4:	4f 92       	push	r4
+    19d6:	5f 92       	push	r5
+    19d8:	6f 92       	push	r6
+    19da:	7f 92       	push	r7
+    19dc:	8f 92       	push	r8
+    19de:	9f 92       	push	r9
+    19e0:	af 92       	push	r10
+    19e2:	bf 92       	push	r11
+    19e4:	cf 92       	push	r12
+    19e6:	df 92       	push	r13
+    19e8:	ef 92       	push	r14
+    19ea:	ff 92       	push	r15
+    19ec:	0f 93       	push	r16
+    19ee:	1f 93       	push	r17
+    19f0:	cf 93       	push	r28
+    19f2:	df 93       	push	r29
+    19f4:	cd b7       	in	r28, 0x3d	; 61
+    19f6:	de b7       	in	r29, 0x3e	; 62
+    19f8:	ca 1b       	sub	r28, r26
+    19fa:	db 0b       	sbc	r29, r27
+    19fc:	0f b6       	in	r0, 0x3f	; 63
+    19fe:	f8 94       	cli
+    1a00:	de bf       	out	0x3e, r29	; 62
+    1a02:	0f be       	out	0x3f, r0	; 63
+    1a04:	cd bf       	out	0x3d, r28	; 61
+    1a06:	09 94       	ijmp
+
+00001a08 <__epilogue_restores__>:
+    1a08:	2a 88       	ldd	r2, Y+18	; 0x12
+    1a0a:	39 88       	ldd	r3, Y+17	; 0x11
+    1a0c:	48 88       	ldd	r4, Y+16	; 0x10
+    1a0e:	5f 84       	ldd	r5, Y+15	; 0x0f
+    1a10:	6e 84       	ldd	r6, Y+14	; 0x0e
+    1a12:	7d 84       	ldd	r7, Y+13	; 0x0d
+    1a14:	8c 84       	ldd	r8, Y+12	; 0x0c
+    1a16:	9b 84       	ldd	r9, Y+11	; 0x0b
+    1a18:	aa 84       	ldd	r10, Y+10	; 0x0a
+    1a1a:	b9 84       	ldd	r11, Y+9	; 0x09
+    1a1c:	c8 84       	ldd	r12, Y+8	; 0x08
+    1a1e:	df 80       	ldd	r13, Y+7	; 0x07
+    1a20:	ee 80       	ldd	r14, Y+6	; 0x06
+    1a22:	fd 80       	ldd	r15, Y+5	; 0x05
+    1a24:	0c 81       	ldd	r16, Y+4	; 0x04
+    1a26:	1b 81       	ldd	r17, Y+3	; 0x03
+    1a28:	aa 81       	ldd	r26, Y+2	; 0x02
+    1a2a:	b9 81       	ldd	r27, Y+1	; 0x01
+    1a2c:	ce 0f       	add	r28, r30
+    1a2e:	d1 1d       	adc	r29, r1
+    1a30:	0f b6       	in	r0, 0x3f	; 63
+    1a32:	f8 94       	cli
+    1a34:	de bf       	out	0x3e, r29	; 62
+    1a36:	0f be       	out	0x3f, r0	; 63
+    1a38:	cd bf       	out	0x3d, r28	; 61
+    1a3a:	ed 01       	movw	r28, r26
+    1a3c:	08 95       	ret
+
+00001a3e <_exit>:
+    1a3e:	f8 94       	cli
+
+00001a40 <__stop_program>:
+    1a40:	ff cf       	rjmp	.-2      	; 0x1a40 <__stop_program>
